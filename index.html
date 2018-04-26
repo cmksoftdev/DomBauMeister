@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Title</title>
+</head>
+
+<body>
+<p id="app"></p>
+<script src="javascript/library.js"></script>
+<script>
+const elements = [
+{type: "h1", content: "Uberschrift"},
+	{type: "div", content: [
+		{type: "div", content: "test2", style: "color:blue;"},
+		{type: "div", content: "test2"},
+	], id: "test1"},
+	{type: "div", content: "test2"},
+	{type: "div", content: "test3"},
+	{content: "Error"},
+];
+const dom = createDOM(elements);
+renderDOM("app", dom);
+setElementXY("test1", "150", "20");
+</script>
+</body>
+</html>
