@@ -8,6 +8,19 @@ function log(message) {
 			logger(message);
 }
 
+function addClickEvent(elementId, action) {
+		if (elementId === undefined || elementId === null
+		|| action === undefined || action === null) {
+		log();
+		return false;
+	}
+	return workWithElement(elementId, (element) => {
+		element.addEventListener('click', function (event) {
+            action();
+        });
+	});
+}
+
 function createHtmlElement(element) {
 	let htmlElement = "";
 	let style = null;

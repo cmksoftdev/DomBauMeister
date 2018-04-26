@@ -9,8 +9,10 @@
 <p id="app"></p>
 <script src="javascript/library.js"></script>
 <script>
+
+// Create array of elements
 const elements = [
-{type: "h1", content: "Uberschrift"},
+{type: "h1", content: "Uberschrift", id: "u"},
 	{type: "div", content: [
 		{type: "div", content: "test2", style: "color:blue;"},
 		{type: "div", content: "test2"},
@@ -19,9 +21,14 @@ const elements = [
 	{type: "div", content: "test3"},
 	{content: "Error"},
 ];
+
+// Create DOM from array and render
 const dom = createDOM(elements);
 renderDOM("app", dom);
-setElementXY("test1", "150", "20");
+
+addClickEvent("u", () => {
+	setElementXY("test1", "150", "20");
+});
 </script>
 </body>
 </html>
