@@ -19,27 +19,43 @@ const elements = [
 	], id: "test1"},
 	{type: "div", content: "test2", id: "test2"},
 	{type: "div", content: "test3", id: "test3"},
-	{content: "Error"},
+	{type: "div", content: "test3", id: "test3"},
 ];
 
 // Create DOM from array and render
 const dom = createDOM(elements);
-renderDOM("app", dom);
+function render(){
+	renderDOM("app", dom, [() => {
+		addClickEvent("u", () => {
+			actionManager.callAction("click1");
+		});
+		addClickEvent("test2", () => {
+			actionManager.callAction("click2");
+		});
+	}]);
+}
+render();
 
 // Create ActionManager 
 const actionManager = new ActionManager();
 
 // Add action and functions to invoke
 actionManager.addAction("click1", [
-	() => {setElementXY("test1", "150", "20");},
-	() => {setElementXY("test2", "150", "20");},
-	() => {setElementXY("test3", "150", "20");},
+	() => {setElementXY("test1", "200", "20");},
+	() => {setElementXY("test2", "220", "20");},
+	() => {setElementXY("test3", "200", "20");},
+]);
+actionManager.addAction("click2", [
+	() => {render()},
 ]);
 
 // Add click event to element
-addClickEvent("u", () => {
-	actionManager.callAction("click1");
-});
+//addClickEvent("u", () => {
+//	actionManager.callAction("click1");
+//});
+//addClickEvent("test2", () => {
+//	actionManager.callAction("click2");
+//});
 </script>
 </body>
 </html>

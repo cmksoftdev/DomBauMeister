@@ -48,13 +48,30 @@ function log(message) {
 }
 
 function addClickEvent(elementId, action) {
+	return addEvent(elementId, "click", action);
+}
+
+function addMouseDownEvent(elementId, action) {
+	return addEvent(elementId, "mousedown", action);
+}
+
+function addMouseUpEvent(elementId, action) {
+	return addEvent(elementId, "mouseup", action);
+}
+
+function addMouseMoveEvent(elementId, action) {
+	return addEvent(elementId, "mousemove", action);
+}
+
+function addEvent(elementId, eventName, action) {
 		if (elementId === undefined || elementId === null
+		|| eventName === undefined || eventName === null
 		|| action === undefined || action === null) {
 		log();
 		return false;
 	}
 	return workWithElement(elementId, (element) => {
-		element.addEventListener('click', function (event) {
+		element.addEventListener(eventName, function (event) {
             action();
         });
 	});
@@ -87,9 +104,12 @@ function createHtmlElement(element) {
 	return htmlElement;
 }
 
-function renderDOM(rootElementId, dom) {
+function renderDOM(rootElementId, dom, actions) {
 	if (dom !== undefined && dom !== null) {
 		setElementContent(rootElementId, dom)
+	}
+	if (Array.isArray(actions)) {
+		actions.forEach((x) => {x();});
 	}
 }
 
