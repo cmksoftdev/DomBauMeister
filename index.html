@@ -26,14 +26,17 @@ const elements = [
 const dom = createDOM(elements);
 renderDOM("app", dom);
 
-//
+// Create ActionManager 
 const actionManager = new ActionManager();
+´
+// Add action and functions to invoke
 actionManager.addAction("click1", [
 	() => {setElementXY("test1", "150", "20");},
 	() => {setElementXY("test2", "150", "20");},
 	() => {setElementXY("test3", "150", "20");},
 ]);
 
+// Add click event to element
 addClickEvent("u", () => {
 	actionManager.callAction("click1");
 });
