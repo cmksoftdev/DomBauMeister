@@ -26,11 +26,11 @@ const elements = [
 const dom = createDOM(elements);
 function render(){
 	renderDOM("app", dom, [() => {
-		addClickEvent("u", () => {
-			actionManager.callAction("click1");
+		addMouseMoveEvent("u", (event) => {
+			actionManager.callAction("click1", event);
 		});
-		addClickEvent("test2", () => {
-			actionManager.callAction("click2");
+		addClickEvent("test2", (event) => {
+			actionManager.callAction("click2", event);
 		});
 	}]);
 }
@@ -41,9 +41,9 @@ const actionManager = new ActionManager();
 
 // Add action and functions to invoke
 actionManager.addAction("click1", [
-	() => {setElementXY("test1", "200", "20");},
-	() => {setElementXY("test2", "220", "20");},
-	() => {setElementXY("test3", "200", "20");},
+	(event) => {setElementXY("test1", getMouseX(event), getMouseY(event));},
+	(event) => {setElementXY("test2", getMouseX(event), getMouseY(event));},
+	(event) => {setElementXY("test3", getMouseX(event), getMouseY(event));},
 ]);
 actionManager.addAction("click2", [
 	() => {render()},

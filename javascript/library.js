@@ -23,12 +23,12 @@ class ActionManager {
 		return true;
 	}
 	
-	callAction(actionName) {
+	callAction(actionName, event) {
 		const action = this.actions.filter((x) => x.actionType === actionName);
 		if (action !== undefined) {
 			action.forEach((a) => {
 				a.listenerArray.forEach((l) => {
-					l();
+					l(event);
 				});
 			});
 		}
@@ -47,16 +47,16 @@ function log(message) {
 			logger(message);
 }
 
-function getMouseX() {
-	return document.Show.MouseX.value;
+function getMouseX(event) {
+	return event.clientX;
 }
 
-function getMouseY() {
-	return document.Show.MouseY.value;
+function getMouseY(event) {
+	return event.clientY;
 }
 
-function getMousePosition() {
-	return {x: document.Show.MouseX.value, y: document.Show.MouseY.value}
+function getMousePosition(event) {
+	return {x: getMouseX(event), y: getMouseY(event)}
 }
 
 function addClickEvent(elementId, action) {
@@ -84,7 +84,7 @@ function addEvent(elementId, eventName, action) {
 	}
 	return workWithElement(elementId, (element) => {
 		element.addEventListener(eventName, function (event) {
-            action();
+            action(event);
         });
 	});
 }
