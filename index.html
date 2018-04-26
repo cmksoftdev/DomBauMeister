@@ -17,8 +17,8 @@ const elements = [
 		{type: "div", content: "test2", style: "color:blue;"},
 		{type: "div", content: "test2"},
 	], id: "test1"},
-	{type: "div", content: "test2"},
-	{type: "div", content: "test3"},
+	{type: "div", content: "test2", id: "test2"},
+	{type: "div", content: "test3", id: "test3"},
 	{content: "Error"},
 ];
 
@@ -26,8 +26,16 @@ const elements = [
 const dom = createDOM(elements);
 renderDOM("app", dom);
 
+//
+const actionManager = new ActionManager();
+actionManager.addAction("click1", [
+	() => {setElementXY("test1", "150", "20");},
+	() => {setElementXY("test2", "150", "20");},
+	() => {setElementXY("test3", "150", "20");},
+]);
+
 addClickEvent("u", () => {
-	setElementXY("test1", "150", "20");
+	actionManager.callAction("click1");
 });
 </script>
 </body>

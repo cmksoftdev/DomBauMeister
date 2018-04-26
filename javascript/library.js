@@ -1,7 +1,46 @@
 // JavaScript Library
-// Copyright CMK Software Development 2018 
+// Copyright CMK Software Development 2018
 
 let logger = null;
+
+class ActionManager {
+	constructor() {
+		this.actions = [];
+	}
+  
+	addAction(actionName, listeners) {
+		if (actionName === undefined || actionName === null
+			|| listeners === undefined || listeners === null) {
+			log();
+			return false;
+		}
+		this.actions.push({
+			actionType: actionName, 
+			listenerArray: listeners !== undefined && 
+				listeners !== null && 
+				Array.isArray(listeners) ? listeners : [],
+		});
+		return true;
+	}
+	
+	callAction(actionName) {
+		const action = this.actions.filter((x) => x.actionType === actionName);
+		if (action !== undefined) {
+			action.forEach((a) => {
+				a.listenerArray.forEach((l) => {
+					l();
+				});
+			});
+		}
+	}
+	
+	addListener(actionName, listener) {
+		const action = this.actions.find((x) => x.actionType === actionName);
+		if (action !== undefined) {
+			action.listenerArray.push(listener);
+		}
+	}
+}
 
 function log(message) {
 	if (logger !== null)
