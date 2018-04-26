@@ -47,6 +47,18 @@ function log(message) {
 			logger(message);
 }
 
+function getMouseX() {
+	return document.Show.MouseX.value;
+}
+
+function getMouseY() {
+	return document.Show.MouseY.value;
+}
+
+function getMousePosition() {
+	return {x: document.Show.MouseX.value, y: document.Show.MouseY.value}
+}
+
 function addClickEvent(elementId, action) {
 	return addEvent(elementId, "click", action);
 }
