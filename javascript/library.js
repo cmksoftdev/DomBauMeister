@@ -1,5 +1,5 @@
 // JavaScript Library
-// Copyright CMK Software Development 2018
+// Copyright CMK Software Development 2018 
 
 let logger = null;
 
