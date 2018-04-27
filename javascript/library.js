@@ -9,8 +9,7 @@ class ActionManager {
 	}
   
 	addAction(actionName, listeners) {
-		if (actionName === undefined || actionName === null
-			|| listeners === undefined || listeners === null) {
+        if (!parameterValidator([actionName, listeners])) {
 			log();
 			return false;
 		}
@@ -23,7 +22,10 @@ class ActionManager {
 		return true;
 	}
 	
-	callAction(actionName, event) {
+    callAction(actionName, event) {
+        if (!parameterValidator([actionName, event])) {
+            log();
+        }
 		const action = this.actions.filter((x) => x.actionType === actionName);
 		if (action !== undefined) {
 			action.forEach((a) => {
@@ -34,13 +36,31 @@ class ActionManager {
 		}
 	}
 	
-	addListener(actionName, listener) {
+    addListener(actionName, listener) {
+        if (!parameterValidator([actionName, listener])) {
+            log();
+        }
 		const action = this.actions.find((x) => x.actionType === actionName);
 		if (action !== undefined) {
 			action.listenerArray.push(listener);
 		}
 	}
 }
+
+function parameterValidator(parameterArray) {
+    if (Array.isArray(parameterArray)) {
+        let result = true;
+        parameterArray.forEach((x) => {
+            if (x === undefined || x === null) {
+                result = false;
+            }
+        });
+        return result;
+    } else {
+        return false;
+    }
+}
+
 
 function log(message) {
 	if (logger !== null)
@@ -76,9 +96,7 @@ function addMouseMoveEvent(elementId, action) {
 }
 
 function addEvent(elementId, eventName, action) {
-		if (elementId === undefined || elementId === null
-		|| eventName === undefined || eventName === null
-		|| action === undefined || action === null) {
+    if (!parameterValidator([elementId, eventName, action])) {
 		log();
 		return false;
 	}
@@ -156,6 +174,10 @@ function getRequest(url) {
 }
 
 function workWithElement(elementId, action) {
+    if (!parameterValidator([elementId, action])) {
+        log();
+        return false;
+    }
 	const element = document.getElementById(elementId)
 	if (element !== null)
 		action(element);
@@ -167,8 +189,7 @@ function workWithElement(elementId, action) {
 }
 
 function setElementContent(elementId, content) {
-	if (elementId === undefined || elementId === null
-		|| content === undefined || content === null) {
+    if (!parameterValidator([elementId, content])) {
 		log();
 		return false;
 	}
@@ -178,9 +199,7 @@ function setElementContent(elementId, content) {
 }
 
 function addElement(elementId, innerElementId, content) {
-	if (elementId === undefined || elementId === null
-		|| innerElementId === undefined || innerElementId === null
-		|| content === undefined || content === null) {
+    if (!parameterValidator([elementId, innerElementId, content])) {
 		log();
 		return false;
 	}
@@ -191,9 +210,7 @@ function addElement(elementId, innerElementId, content) {
 }
 
 function setElementXY(elementId, x, y) {
-	if (elementId === undefined || elementId === null
-		|| x === undefined || x === null
-		|| y === undefined || y === null) {
+    if (!parameterValidator([elementId, x, y])) {
 		log();
 		return false;
 	}
