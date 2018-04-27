@@ -1,57 +1,59 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Title</title>
 </head>
 
 <body>
-<p id="app"></p>
-<script src="javascript/library.js"></script>
-<script>
+    <p id="app"></p>
+    <script src="javascript/library.js"></script>
+    <script>
 
-// Create array of elements
-const elements = [
-{type: "h1", content: "Uberschrift", id: "u"},
-	{type: "div", content: [
-		{type: "div", content: "test2", style: "color:blue;"},
-		{type: "div", content: "test2"},
-	], id: "test1"},
-	{type: "div", content: "test2", id: "test2"},
-	{type: "div", content: "test3", id: "test3"},
-	{type: "div", content: "test4", id: "test4"},
-];
+        // Create array of elements
+        const elements = [
+            { type: "h1", content: "Uberschrift", id: "u" },
+            {
+                type: "div", content: [
+                    { type: "div", content: "test2", style: "color:blue;" },
+                    { type: "div", content: "test2" },
+                ], id: "test1"
+            },
+            { type: "div", content: "test2", id: "test2" },
+            { type: "div", content: "test3", id: "test3" },
+            { type: "div", content: "test4", id: "test4" },
+        ];
 
-// Create DOM from array and render
-const dom = createDOM(elements);
-function render(){
-	renderDOM("app", dom, [() => {
-		addMouseMoveEvent("u", (event) => {
-			actionManager.callAction("click1", event);
-		});
-		addClickEvent("test2", (event) => {
-			actionManager.callAction("click2", event);
-		});
-	}]);
-}
-render();
+        // Create DOM from array and render
+        const dom = createDOM(elements);
+        function render() {
+            renderDOM("app", dom, [() => {
+                addMouseMoveEvent("u", (event) => {
+                    actionManager.callAction("click1", event);
+                });
+                addClickEvent("test2", (event) => {
+                    actionManager.callAction("click2", event);
+                });
+            }]);
+        }
+        render();
 
-// Create ActionManager 
-const actionManager = new ActionManager();
+        // Create ActionManager
+        const actionManager = new ActionManager();
 
-// Add action and functions to invoke
-actionManager.addAction("click1", [
-	(event) => {setElementXY("test1", getMouseX(event), getMouseY(event));},
-	(event) => {setElementXY("test2", getMouseX(event), getMouseY(event));},
-	(event) => {setElementXY("test3", getMouseX(event), getMouseY(event));},
-]);
-actionManager.addAction("click2", [
-	() => {render()},
-]);
+        // Add action and functions to invoke
+        actionManager.addAction("click1", [
+            (event) => { setElementXY("test1", getMouseX(event), getMouseY(event)); },
+            (event) => { setElementXY("test2", getMouseX(event), getMouseY(event)); },
+            (event) => { setElementXY("test3", getMouseX(event), getMouseY(event)); },
+        ]);
+        actionManager.addAction("click2", [
+            () => { render() },
+        ]);
 
-    const valid = parameterValidator(["1","3","c"]);
-    const invalid1 = parameterValidator(["1", "3", null]);
-    const invalid2 = parameterValidator([undefined, "3", "c"]);
-</script>
+        const valid = parameterValidator(["1", "3", "c"]);
+        const invalid1 = parameterValidator(["1", "3", null]);
+        const invalid2 = parameterValidator([undefined, "3", "c"]);
+    </script>
 </body>
 </html>
