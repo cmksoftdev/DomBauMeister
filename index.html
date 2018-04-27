@@ -50,7 +50,8 @@
         actionManager.addAction("click2", [
             () => { render() },
         ]);
-
+        const prop = new Property("", (x) => setElementContent("test1", x));
+        const httpre = getRequestAsync("https://poloniex.com/public?command=returnTicker", (x) => prop.set(x));
         const valid = parameterValidator(["1", "3", "c"]);
         const invalid1 = parameterValidator(["1", "3", null]);
         const invalid2 = parameterValidator([undefined, "3", "c"]);

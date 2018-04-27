@@ -3,6 +3,26 @@
 
 let logger = null;
 
+class Property {
+    constructor(value, notifier) {
+        this.value = value === undefined ? null : value;
+        this.notifier = notifier === undefined ? null : notifier;
+    }
+
+    get() {
+        return this.value;
+    }
+
+    set(v) {
+        if (parameterValidator([v])) {
+            this.value = v;
+            if (parameterValidator([this.notifier])) {
+                this.notifier(v);
+            }
+        }
+    }
+}
+
 class ActionManager {
     constructor() {
         this.actions = [];
@@ -155,15 +175,29 @@ function createDOM(elements) {
     return dom;
 }
 
-function getRequest(url) {
+function getRequestAsync(url, action) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
+    xhr.onreadystatechange = (e) => {
+        action(xhr.responseText);
+    };
+    xhr.onerror = function (e) {
+        log(xhr.statusText);
+    };
+    xhr.send(null);
+    return xhr.responseText;
+}
+
+function getRequest(url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, false);
     xhr.onload = function (e) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 return xhr.responseText;
             } else {
                 log(xhr.statusText);
+                return xhr.statusText;
             }
         }
     };
@@ -171,6 +205,7 @@ function getRequest(url) {
         log(xhr.statusText);
     };
     xhr.send(null);
+    return xhr.responseText;
 }
 
 function workWithElement(elementId, action) {
