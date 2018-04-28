@@ -3,14 +3,20 @@
 
 let logger = null;
 
+//
 class Property {
-    constructor(value, notifier) {
+    constructor(value, notifier, id) {
         this.value = value === undefined ? null : value;
         this.notifier = notifier === undefined ? null : notifier;
+        this.id = id === undefined ? null : id;
     }
 
     get() {
         return this.value;
+    }
+
+    getId() {
+        return this.id;
     }
 
     set(v) {
