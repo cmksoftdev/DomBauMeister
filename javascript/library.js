@@ -3,7 +3,7 @@
 
 let logger = null;
 
-//
+// Property with on change notification
 class Property {
     constructor(value, notifier, id) {
         this.value = value === undefined ? null : value;

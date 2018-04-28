@@ -23,35 +23,48 @@
             { type: "div", content: "test3", id: "test3" },
             { type: "div", content: "test4", id: "test4" },
         ];
+        const position = new Property(false);
+        const prop = new Property("", (p) => setElementXY("u", p.x, p.y));
+        const isDown = new Property(false);
+
+        // Create ActionManager
+        const actionManager = new ActionManager();
 
         // Create DOM from array and render
         const dom = createDOM(elements);
         function render() {
-            renderDOM("app", dom, [() => {
+            renderDOM("app", dom, [
+                () => {
                 addMouseMoveEvent("u", (event) => {
-                    actionManager.callAction("click1", event);
+                    actionManager.callAction("mousemove", event);
                 });
-                addClickEvent("test2", (event) => {
-                    actionManager.callAction("click2", event);
+                addMouseDownEvent("u", (event) => {
+                    actionManager.callAction("mousedown", event);
+                });
+                addMouseUpEvent("u", (event) => {
+                    actionManager.callAction("mouseup", event);
                 });
             }]);
         }
         render();
 
-        // Create ActionManager
-        const actionManager = new ActionManager();
-
         // Add action and functions to invoke
-        actionManager.addAction("click1", [
-            (event) => { setElementXY("test1", getMouseX(event), getMouseY(event)); },
-            (event) => { setElementXY("test2", getMouseX(event), getMouseY(event)); },
-            (event) => { setElementXY("test3", getMouseX(event), getMouseY(event)); },
+        actionManager.addAction("mousemove", [
+            (event) => {
+                if (isDown.get()) {
+                    let posi = getMousePosition(event);
+                    posi = {x: posi.x - 30, y: posi.y - 30}
+                    prop.set(posi);
+                }                
+            },
         ]);
-        actionManager.addAction("click2", [
-            () => { render() },
+        actionManager.addAction("mousedown", [
+            () => { isDown.set(true); },
         ]);
-        const prop = new Property("", (x) => setElementContent("test1", x));
-        const httpre = getRequestAsync("https://poloniex.com/public?command=returnTicker", (x) => prop.set(x));
+        actionManager.addAction("mouseup", [
+            () => { isDown.set(false); },
+        ]);
+
         const valid = parameterValidator(["1", "3", "c"]);
         const invalid1 = parameterValidator(["1", "3", null]);
         const invalid2 = parameterValidator([undefined, "3", "c"]);
