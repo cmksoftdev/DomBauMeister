@@ -12,19 +12,57 @@
 
         // Create array of elements
         const elements = [
-            { type: "h1", content: "Uberschrift", id: "u" },
             {
-                type: "div", content: [
-                    { type: "div", content: "test2", style: "color:blue;" },
-                    { type: "div", content: "test2" },
-                ], id: "test1"
+                type: "div",
+                style: "position:fixed;width:100%;height:100%;",
+                content: [
+                    {
+                        type: "div",
+                        content: [
+                            {
+                                type: "h1",
+                                content: "Uberschrift",
+                                id: "u"
+                            }],
+                        id: "uc"
+                    },
+                    {
+                        type: "div",
+                        content: [
+                            {
+                                type: "div",
+                                content: "test2",
+                                style: "color:blue;"
+                            },
+                            {
+                                type: "div",
+                                content: "test2"
+                            },
+                        ],
+                        id: "test1"
+                    },
+                    {
+                        type: "div",
+                        content: "test2",
+                        id: "test2"
+                    },
+                    {
+                        type: "div",
+                        content: "test3",
+                        id: "test3"
+                    },
+                    {
+                        type: "div",
+                        content: "test4",
+                        id: "test4"
+                    },
+                ],
+                id: "main"
             },
-            { type: "div", content: "test2", id: "test2" },
-            { type: "div", content: "test3", id: "test3" },
-            { type: "div", content: "test4", id: "test4" },
+
         ];
         const position = new Property(false);
-        const prop = new Property("", (p) => setElementXY("u", p.x, p.y));
+        const positionOfU = new Property("", (p) => setElementXY("uc", p.x, p.y));
         const isDown = new Property(false);
 
         // Create ActionManager
@@ -35,16 +73,19 @@
         function render() {
             renderDOM("app", dom, [
                 () => {
-                addMouseMoveEvent("u", (event) => {
-                    actionManager.callAction("mousemove", event);
-                });
-                addMouseDownEvent("u", (event) => {
-                    actionManager.callAction("mousedown", event);
-                });
-                addMouseUpEvent("u", (event) => {
-                    actionManager.callAction("mouseup", event);
-                });
-            }]);
+                    addMouseMoveEvent("main", (event) => {
+                        event.preventDefault();
+                        actionManager.callAction("mousemove", event);
+                    });
+                    addMouseDownEvent("main", (event) => {
+                        event.preventDefault();
+                        actionManager.callAction("mousedown", event);
+                    });
+                    addMouseUpEvent("main", (event) => {
+                        event.preventDefault();
+                        actionManager.callAction("mouseup", event);
+                    });
+                }]);
         }
         render();
 
@@ -53,9 +94,9 @@
             (event) => {
                 if (isDown.get()) {
                     let posi = getMousePosition(event);
-                    posi = {x: posi.x - 30, y: posi.y - 30}
-                    prop.set(posi);
-                }                
+                    posi = { x: posi.x - 30, y: posi.y - 30 }
+                    positionOfU.set(posi);
+                }
             },
         ]);
         actionManager.addAction("mousedown", [

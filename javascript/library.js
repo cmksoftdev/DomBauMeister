@@ -122,12 +122,19 @@ function addMouseMoveEvent(elementId, action) {
 }
 
 function addEvent(elementId, eventName, action) {
-    if (!parameterValidator([elementId, eventName, action])) {
+    if (!parameterValidator([eventName, action])) {
         log();
         return false;
     }
+    if (!parameterValidator([elementId])) {
+        const e = document.body;
+            e.addEventListener(eventName, (event) => {
+                action(event);
+        });
+            return true;
+    }
     return workWithElement(elementId, (element) => {
-        element.addEventListener(eventName, function (event) {
+        element.addEventListener(eventName, (event) => {
             action(event);
         });
     });
@@ -139,7 +146,7 @@ function createHtmlElement(element) {
     let content = null;
     let id = null;
     if (element.style !== undefined && element.style !== null) {
-        style = " style=" + element.style;
+        style = " style=\"" + element.style + "\"";
     }
     if (element.content !== undefined && element.content !== null) {
         if (Array.isArray(element.content)) {
