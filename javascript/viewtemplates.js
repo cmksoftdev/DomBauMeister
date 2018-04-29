@@ -15,7 +15,7 @@ const windowtest = {
                             content: [{
                                 type: "label",
                                 style: "background-color: color:white;font-size:22px;text-align:center;",
-                                content: "Uberschrift",
+                                content: "Window Title",
                                 id: "label"
                             }, {
                                 type: "button",
@@ -29,13 +29,13 @@ const windowtest = {
                         {
                             type: "div",
                             style: "background-color: lightgray;width:100%;height:78%;",
-                            content: "Uberschrift",
+                            content: "Content",
                             id: "w2"
                         },
                         {
                             type: "div",
                             style: "background-color: gray;",
-                            content: "Uberschrift",
+                            content: "footer",
                             id: "w3"
                         }],
                     style: "position: absolute;" +
@@ -58,7 +58,7 @@ const windowtest = {
         actionName: "mousemove",
         enabled: false
     }, {
-        elementId: "w1",
+        elementId: "label",
         domTreeId: "window",
         eventId: "mousedown",
         eventName: "mousedown",

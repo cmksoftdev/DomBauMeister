@@ -94,18 +94,28 @@
             actionName: "mousemove",
             listeners: [
                 (x) => {
-                    facilitymanager.getAndSetModel("window", () => {
+                    facilitymanager.getAndSetModel("window", (m) => {
                         return {
-                            x: x.clientX,
-                            y: x.clientY,
+                            x: m.x + x.clientX - m.xOld,
+                            y: m.y + x.clientY - m.yOld,
+                            xOld: x.clientX,
+                            yOld: x.clientY,
                         }
-                    })
+                    });
                 },
             ]
         }, {
             actionName: "mousedown",
             listeners: [
-                () => { facilitymanager.eventManager.changeEventActivity("mousemove", true); },
+                (x) => {
+                    facilitymanager.eventManager.changeEventActivity("mousemove", true);
+                    facilitymanager.getAndSetModel("window", (m) => {
+                        return {                            x: x.clientX,
+                            ...m,
+                            xOld: x.clientX,
+                            yOld: x.clientY,
+                        }
+                    }) },
             ]
         }, {
             actionName: "mouseup",
