@@ -55,7 +55,7 @@ class Facilitymanager {
     }
 
     addView(view) {
-        if (!parameterValidator([view.name, view.domTree, events, actions])) {
+        if (!parameterValidator([view.name, view.domTree, view.events, view.actions])) {
             log();
             return false;
         }
