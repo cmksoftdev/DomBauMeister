@@ -92,8 +92,14 @@ class FacilityManager {
         let domTree = this.domManager.getDom(domTreeId);
         let model = m === undefined ? this.models.find((x) => x.name === domTreeId).model.get() : m;
         let dom = domTree.render(model);
-        renderDOM(domTree.rootElementId, createDOM(dom));
         const events = this.eventManager.events.filter((x) => x.isEnabled);
+        events.forEach((x) => {
+            if (x.action !== undefined)
+                removeEvent(x.elementId, x.eventId, (e) => x.action(e));
+            else
+                removeEvent(x.elementId, x.eventId, (e) => this.actionManager.callAction(x.actionName, e));
+        });
+        renderDOM(domTree.rootElementId, createDOM(dom));
         events.forEach((x) => {
             if (x.action !== undefined)
                 addEvent(x.elementId, x.eventId, (e) => x.action(e));
@@ -243,6 +249,7 @@ class ActionManager {
             action.forEach((a) => {
                 a.listenerArray.forEach((l) => {
                     l(event);
+                    console.log("called " + actionName);
                 });
             });
         }
