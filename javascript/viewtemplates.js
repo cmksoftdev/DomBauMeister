@@ -7,18 +7,20 @@ const windowtest = {
                 type: "div",
                 content: [
                     {
-                        type: "h1",
+                        type: "h2",
+                        style: "background-color: blue;color:white;",
                         content: "Uberschrift",
                         id: "w1"
                     },
                     {
                         type: "div",
-                        style: "backgroundcolor:red;",
+                        style: "background-color: lightgray;",
                         content: "Uberschrift",
                         id: "w2"
                     },
                     {
                         type: "div",
+                        style: "background-color: gray;",
                         content: "Uberschrift",
                         id: "w3"
                     }],
