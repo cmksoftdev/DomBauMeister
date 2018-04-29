@@ -29,6 +29,10 @@ class Property {
     }
 }
 
+class EventManager {
+
+}
+
 class ActionManager {
     constructor() {
         this.actions = [];
@@ -57,6 +61,7 @@ class ActionManager {
             action.forEach((a) => {
                 a.listenerArray.forEach((l) => {
                     l(event);
+                    console.log(actionName);
                 });
             });
         }
@@ -145,6 +150,7 @@ function createHtmlElement(element) {
     let style = null;
     let content = null;
     let id = null;
+    let extend = null;
     if (element.style !== undefined && element.style !== null) {
         style = " style=\"" + element.style + "\"";
     }
@@ -156,11 +162,16 @@ function createHtmlElement(element) {
         }
     }
     if (element.id !== undefined && element.id !== null) {
-        id = " id=" + element.id;
+        id = " id=\"" + element.id + "\"";
+    } if (element.extend !== undefined && element.extend !== null) {
+        for (let e in element.extend) {
+            extend = " " + e + "=\"" + element.extend[e] + "\"";
+        }
     }
     if (element.type !== undefined && element.type !== null) {
         htmlElement += "<" + element.type +
             (id !== null ? id : "") +
+            (extend !== null ? extend : "") +
             (style !== null ? style : "") + ">" +
             (content !== null ? content : "") + "</" + element.type + ">";
     }
@@ -168,6 +179,7 @@ function createHtmlElement(element) {
 }
 
 function renderDOM(rootElementId, dom, actions) {
+    console.log("render");
     if (dom !== undefined && dom !== null) {
         setElementContent(rootElementId, dom)
     }

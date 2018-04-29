@@ -11,71 +11,82 @@
     <script>
 
         // Create array of elements
-        const elements = [
-            {
-                type: "div",
-                style: "position:fixed;width:100%;height:100%;",
-                content: [
-                    {
-                        type: "div",
-                        content: [
-                            {
-                                type: "h1",
-                                content: "Uberschrift",
-                                id: "u"
-                            }],
-                        id: "uc"
-                    },
-                    {
-                        type: "div",
-                        content: [
-                            {
-                                type: "div",
-                                content: "test2",
-                                style: "color:blue;"
+        function getDom() {
+            const pos = positionOfU.get();
+            const elements = [
+                {
+                    type: "div",
+                    style: "position:fixed;width:100%;height:80%;",
+                    content: [
+                        {
+                            type: "div",
+                            extend: {
+                                class: ".testclass"
                             },
-                            {
-                                type: "div",
-                                content: "test2"
-                            },
-                        ],
-                        id: "test1"
-                    },
-                    {
-                        type: "div",
-                        content: "test2",
-                        id: "test2"
-                    },
-                    {
-                        type: "div",
-                        content: "test3",
-                        id: "test3"
-                    },
-                    {
-                        type: "div",
-                        content: "test4",
-                        id: "test4"
-                    },
-                ],
-                id: "main"
-            },
+                            content: [
+                                {
+                                    type: "h1",
+                                    content: "Uberschrift",
+                                    id: "u"
+                                }],
+                            style: "position: absolute;left:" + pos.x + "px;top:" + pos.y + "px;",
+                            id: "uc"
+                        },
+                        {
+                            type: "div",
+                            content: [
+                                {
+                                    type: "div",
+                                    content: "test2",
+                                    style: "color:blue;"
+                                },
+                                {
+                                    type: "div",
+                                    content: "test2"
+                                },
+                            ],
+                            id: "test1"
+                        },
+                        {
+                            type: "div",
+                            content: "test2",
+                            id: "test2"
+                        },
+                        {
+                            type: "div",
+                            content: "test3",
+                            id: "test3"
+                        },
+                        {
+                            type: "div",
+                            content: "test4",
+                            id: "test4"
+                        },
+                    ],
+                    id: "main"
+                },
 
-        ];
+            ];
+            return createDOM(elements);
+        }
         const position = new Property(false);
-        const positionOfU = new Property("", (p) => setElementXY("uc", p.x, p.y));
+        const positionOfU = new Property("", () => render());
         const isDown = new Property(false);
 
         // Create ActionManager
         const actionManager = new ActionManager();
 
         // Create DOM from array and render
-        const dom = createDOM(elements);
         function render() {
-            renderDOM("app", dom, [
+            renderDOM("app", getDom(), [
                 () => {
                     addMouseMoveEvent("main", (event) => {
                         event.preventDefault();
                         actionManager.callAction("mousemove", event);
+                    });
+                    addEvent("main", "blur",(event) => {
+                        event.preventDefault();
+                        actionManager.callAction("mousedown", event);
                     });
                     addMouseDownEvent("main", (event) => {
                         event.preventDefault();
@@ -105,10 +116,6 @@
         actionManager.addAction("mouseup", [
             () => { isDown.set(false); },
         ]);
-
-        const valid = parameterValidator(["1", "3", "c"]);
-        const invalid1 = parameterValidator(["1", "3", null]);
-        const invalid2 = parameterValidator([undefined, "3", "c"]);
     </script>
 </body>
 </html>
