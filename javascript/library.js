@@ -69,9 +69,9 @@ class FacilityManager {
         if (Array.isArray(view.events)) {
             view.events.forEach((x) => {
                 if (x.action !== undefined)
-                    this.eventManager.addEvent(x.elementId, x.domTreeId, x.eventId, x.eventName, x.action);
+                    this.eventManager.addEvent(x.elementId, x.domTreeId, x.eventId, x.eventName, x.action, x.enabled);
                 else
-                    this.eventManager.addEventA(x.elementId, x.domTreeId, x.eventId, x.eventName, x.actionName);
+                    this.eventManager.addEventA(x.elementId, x.domTreeId, x.eventId, x.eventName, x.actionName, x.enabled);
             });
         }
         this.models.push({
@@ -84,28 +84,22 @@ class FacilityManager {
 
     getAndSetModel(name, action) {
         const model = this.models.find((x) => x.name === name);
-        model.set(action(model.get()));
+        const m = model.model.get();
+        model.model.set(action(m));
     }
 
     renderTree(domTreeId, m) {
         let domTree = this.domManager.getDom(domTreeId);
-        let model = m === undefined ? this.models.find((x) => x.name === domTreeId) : m;
+        let model = m === undefined ? this.models.find((x) => x.name === domTreeId).model.get() : m;
         let dom = domTree.render(model);
+        renderDOM(domTree.rootElementId, createDOM(dom));
         const events = this.eventManager.getEventsForTree(domTreeId);
         events.forEach((x) => {
-            let element = this.domManager.searchElementInDom(dom, x.elementId);
-            let extension = new Object();
-            extension[x.name] = x.action === undefined ? (e) => actionManager.callAction(x.actionName, e) : (e) => a.action(e);
-            element.extend = element.extend === undefined ? [] : element.extend;
-            element = {
-                ...domTree,
-                extend: {
-                    ...element.extend,
-                    ...extension,
-                },
-            };
+            if (x.action !== undefined)
+                addEvent(x.elementId, x.eventId, (e) => x.action(e));
+            else
+                addEvent(x.elementId, x.eventId, (e) => this.actionManager.callAction(x.actionName, e));
         });
-        renderDOM(domTree.rootElementId, createDOM(dom));
     }
 }
 
@@ -152,7 +146,7 @@ class EventManager {
         this.onChange = onChange;
     }
 
-    addEvent(elementId, domTreeId, eventId, eventName, action) {
+    addEvent(elementId, domTreeId, eventId, eventName, action, enabled) {
         if (!parameterValidator([elementId, domTreeId, eventId, eventName, action])) {
             log();
             return false;
@@ -163,12 +157,12 @@ class EventManager {
             eventId: eventId,
             eventName: eventName,
             action: action,
-            isEnabled: true,
+            isEnabled: enabled !== undefined ? enabled : true,
         });
         return true;
     }
 
-    addEventA(elementId, domTreeId, eventId, eventName, actionName) {
+    addEventA(elementId, domTreeId, eventId, eventName, actionName, enabled) {
         if (!parameterValidator([elementId, domTreeId, eventId, eventName, actionName])) {
             log();
             return false;
@@ -179,7 +173,7 @@ class EventManager {
             eventId: eventId,
             eventName: eventName,
             actionName: actionName,
-            isEnabled: true,
+            isEnabled: enabled !== undefined ? enabled : true,
         });
         return true;
     }
@@ -205,12 +199,14 @@ class EventManager {
         return this.events.filter((x) => x.eventId === eventId);
     }
 
-    changeEventActivity(eventId, isEnabled) {
+    changeEventActivity(eventId, isEnabled, action) {
         const i = this.events.findIndex((x) => x.eventId === eventId);
         this.events[i] = {
             ...this.events[i],
             isEnabled: isEnabled,
         };
+        const a = this.events[i].action === undefined ? action : this.events[i].action;
+        removeEvent(this.events[i].elementId, this.events[i].eventId, a);
         this.onChange(this.events[i].domTreeId);
     }
 }
@@ -326,6 +322,25 @@ function addEvent(elementId, eventName, action) {
     }
     return workWithElement(elementId, (element) => {
         element.addEventListener(eventName, (event) => {
+            action(event);
+        });
+    });
+}
+
+function removeEvent(elementId, eventName, action) {
+    if (!parameterValidator([eventName, action])) {
+        log();
+        return false;
+    }
+    if (!parameterValidator([elementId])) {
+        const e = document.body;
+        e.removeEventListener(eventName, (event) => {
+            action(event);
+        });
+        return true;
+    }
+    return workWithElement(elementId, (element) => {
+        element.removeEventListener(eventName, (event) => {
             action(event);
         });
     });

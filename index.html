@@ -11,8 +11,7 @@
     <script>
 
         // Create array of elements
-        function getDom(posit) {
-            const pos = posit.model.get();
+        function getDom(pos) {
             const elements = [
                 {
                     type: "div",
@@ -71,7 +70,7 @@
         }
 
         const facilitymanager = new FacilityManager(
-            new EventManager((x) => this.renderTree(x, this.models.find((y) => y.name === x))),
+            new EventManager((x) => facilitymanager.renderTree(x, facilitymanager.models.find((y) => y.name === x).model.get())),
             new ActionManager(),
             new DomManager(),
             null
@@ -86,7 +85,8 @@
                 domTreeId: "main",
                 eventId: "mousemove",
                 eventName: "mousemove",
-                actionName: "mousemove"
+                actionName: "mousemove",
+                enabled: false
             }, {
                 elementId: "main",
                 domTreeId: "main",
@@ -109,7 +109,7 @@
         facilitymanager.addActions([{
                 actionName: "mousemove",
                 listeners: [
-                    (a,x) => {
+                    (x) => {
                         facilitymanager.getAndSetModel("main", () => {
                             return {
                                 x: x.clientX,
@@ -131,57 +131,6 @@
             }
         ]);
         facilitymanager.renderTree("main");
-
-        //const position = new Property(false);
-        //let oldPosition = { x: 0, y: 0 };
-        //const positionOfU = new Property({ x: 0, y: 0 }, () => render());
-        //const isDown = new Property(false);
-
-        //// Create ActionManager
-        //const actionManager = new ActionManager();
-
-        //// Create DOM from array and render
-        //function render() {
-        //    renderDOM("app", getDom(), [
-        //        () => {
-        //            addMouseMoveEvent("main", (event) => {
-        //                event.preventDefault();
-        //                actionManager.callAction("mousemove", event);
-        //            });
-        //            addEvent("main", "blur", (event) => {
-        //                event.preventDefault();
-        //                actionManager.callAction("mousedown", event);
-        //            });
-        //            addMouseDownEvent("main", (event) => {
-        //                event.preventDefault();
-        //                actionManager.callAction("mousedown", event);
-        //            });
-        //            addMouseUpEvent("main", (event) => {
-        //                event.preventDefault();
-        //                actionManager.callAction("mouseup", event);
-        //            });
-        //        }]);
-        //}
-        //render();
-
-        //// Add action and functions to invoke
-        //actionManager.addAction("mousemove", [
-        //    (event) => {
-        //        if (isDown.get()) {
-        //            let posi = getMousePosition(event);
-        //            const delta = { x: oldPosition.x - posi.x, y: oldPosition.y - posi.y };
-        //            posi = { x: posi.x, y: posi.y }
-        //            positionOfU.set(posi);
-        //            oldPosition = positionOfU.get();
-        //        }
-        //    },
-        //]);
-        //actionManager.addAction("mousedown", [
-        //    () => { isDown.set(true); },
-        //]);
-        //actionManager.addAction("mouseup", [
-        //    () => { isDown.set(false); },
-        //]);
     </script>
 </body>
 </html>
