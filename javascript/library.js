@@ -93,7 +93,7 @@ class FacilityManager {
         let model = m === undefined ? this.models.find((x) => x.name === domTreeId).model.get() : m;
         let dom = domTree.render(model);
         renderDOM(domTree.rootElementId, createDOM(dom));
-        const events = this.eventManager.getEventsForTree(domTreeId);
+        const events = this.eventManager.events.filter((x) => x.isEnabled);
         events.forEach((x) => {
             if (x.action !== undefined)
                 addEvent(x.elementId, x.eventId, (e) => x.action(e));

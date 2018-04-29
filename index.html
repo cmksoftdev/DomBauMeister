@@ -7,9 +7,10 @@
 
 <body>
     <p id="app"></p>
+    <p id="app2"></p>
     <script src="javascript/library.js"></script>
+    <script src="javascript/viewtemplates.js"></script>
     <script>
-
         // Create array of elements
         function getDom(pos) {
             const elements = [
@@ -106,6 +107,8 @@
             }
         });
 
+        facilitymanager.addView(windowtest);
+
         facilitymanager.addActions([{
             actionName: "mousemove",
             listeners: [
@@ -130,6 +133,7 @@
             ]
         }
         ]);
+        facilitymanager.renderTree("window");
         facilitymanager.renderTree("main");
     </script>
 </body>
