@@ -3,6 +3,8 @@
 
 let logger = null;
 
+// No specific Level
+
 // Property with on change notification
 class Property {
     constructor(value, notifier, id) {
@@ -29,9 +31,80 @@ class Property {
     }
 }
 
-class EventManager {
+// Level 3
+// High level classes
 
+class FacilityManager {
+    constructor(eventManager, actionManager, config) {
+        this.actionManager = actionManager;
+        this.eventManager = eventManager;
+        this.config = config;
+        this.domTrees = [];
+    }
+
+    addView(view) {
+
+    }
 }
+
+// Level 2
+// Upper level functions and classes
+
+class EventManager {
+    constructor(onChange) {
+        this.events = [];
+        this.onChange = onChange;
+    }
+
+    addEvent(elementId, domTreeId, eventId, eventName, action) {
+        if (!parameterValidator([elementId, domTreeId, eventId, eventName, action])) {
+            log();
+            return false;
+        }
+        this.events.push({
+            elementId: elementId,
+            domTreeId: domTreeId,
+            eventId: eventId,
+            eventName: eventName,
+            action: action,
+            isEnabled: true,
+        });
+        return true;
+    }
+
+    getEventsForTree(domTreeId) {
+        if (!parameterValidator([domTreeId])) {
+            log();
+        }
+        return this.events.filter((x) => x.domTreeId === domTreeId);
+    }
+
+    getEventsForElement(elementId) {
+        if (!parameterValidator([elementId])) {
+            log();
+        }
+        return this.events.filter((x) => x.elementId === elementId);
+    }
+
+    getEventsById(eventId) {
+        if (!parameterValidator([eventId])) {
+            log();
+        }
+        return this.events.filter((x) => x.eventId === eventId);
+    }
+
+    changeEventActivity(eventId, isEnabled) {
+        const i = this.events.findIndex((x) => x.eventId === eventId);
+        this.events[i] = {
+            ...this.events[i],
+            isEnabled: isEnabled,
+        };
+        this.onChange(this.events[i].domTreeId);
+    }
+}
+
+// Level 1
+// Lower level functions and classes
 
 class ActionManager {
     constructor() {

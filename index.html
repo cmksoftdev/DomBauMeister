@@ -70,7 +70,8 @@
             return createDOM(elements);
         }
         const position = new Property(false);
-        const positionOfU = new Property("", () => render());
+        let oldPosition = { x: 0, y: 0 };
+        const positionOfU = new Property({x: 0, y: 0}, () => render());
         const isDown = new Property(false);
 
         // Create ActionManager
@@ -105,8 +106,10 @@
             (event) => {
                 if (isDown.get()) {
                     let posi = getMousePosition(event);
-                    posi = { x: posi.x - 30, y: posi.y - 30 }
+                    const delta = { x: oldPosition.x - posi.x, y: oldPosition.y - posi.y };
+                    posi = { x: posi.x, y: posi.y }
                     positionOfU.set(posi);
+                    oldPosition = positionOfU.get();
                 }
             },
         ]);
