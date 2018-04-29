@@ -243,7 +243,6 @@ class ActionManager {
             action.forEach((a) => {
                 a.listenerArray.forEach((l) => {
                     l(event);
-                    console.log(actionName);
                 });
             });
         }
@@ -387,7 +386,6 @@ function createHtmlElement(element) {
 }
 
 function renderDOM(rootElementId, dom, actions) {
-    console.log("render");
     if (dom !== undefined && dom !== null) {
         setElementContent(rootElementId, dom)
     }

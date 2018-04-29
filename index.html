@@ -88,7 +88,7 @@
                 actionName: "mousemove",
                 enabled: false
             }, {
-                elementId: "main",
+                elementId: "uc",
                 domTreeId: "main",
                 eventId: "mousedown",
                 eventName: "mousedown",
@@ -107,28 +107,28 @@
         });
 
         facilitymanager.addActions([{
-                actionName: "mousemove",
-                listeners: [
-                    (x) => {
-                        facilitymanager.getAndSetModel("main", () => {
-                            return {
-                                x: x.clientX,
-                                y: x.clientY,
-                            }
-                        })
-                    },
-                ]
-            }, {
-                actionName: "mousedown",
-                listeners: [
-                    () => { facilitymanager.eventManager.changeEventActivity("mousemove", true); },
-                ]
-            }, {
-                actionName: "mouseup",
-                listeners: [
-                    () => { facilitymanager.eventManager.changeEventActivity("mousemove", false); },
-                ]
-            }
+            actionName: "mousemove",
+            listeners: [
+                (x) => {
+                    facilitymanager.getAndSetModel("main", () => {
+                        return {
+                            x: x.clientX,
+                            y: x.clientY,
+                        }
+                    })
+                },
+            ]
+        }, {
+            actionName: "mousedown",
+            listeners: [
+                () => { facilitymanager.eventManager.changeEventActivity("mousemove", true); },
+            ]
+        }, {
+            actionName: "mouseup",
+            listeners: [
+                () => { facilitymanager.eventManager.changeEventActivity("mousemove", false); },
+            ]
+        }
         ]);
         facilitymanager.renderTree("main");
     </script>
