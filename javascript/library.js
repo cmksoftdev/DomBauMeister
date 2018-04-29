@@ -61,40 +61,51 @@ class FacilityManager {
     }
 
     addView(view) {
-        if (!parameterValidator([view.name, rootElementId, view.domTreeFunction, view.events, view.model])) {
+        if (!parameterValidator([view.name, view.rootElementId, view.render, view.events, view.model])) {
             log();
             return false;
         }
-        this.domManager.add(view.name, rootElementId, view.domTree);
+        this.domManager.addDom(view.name, view.rootElementId, view.render);
         if (Array.isArray(view.events)) {
-            view.events.forEach((x) => this.eventManager.addAction(x.elementId, x.domTreeId, x.eventId, x.eventName, x.action));
+            view.events.forEach((x) => {
+                if (x.action !== undefined)
+                    this.eventManager.addEvent(x.elementId, x.domTreeId, x.eventId, x.eventName, x.action);
+                else
+                    this.eventManager.addEventA(x.elementId, x.domTreeId, x.eventId, x.eventName, x.actionName);
+            });
         }
         this.models.push({
             name: view.name,
             model: new Property(view.model, (m) => {
-                this.render(view.name);
+                this.renderTree(view.name, m);
             }),
         });
     }
 
-    render(domTreeId) {
+    getAndSetModel(name, action) {
+        const model = this.models.find((x) => x.name === name);
+        model.set(action(model.get()));
+    }
+
+    renderTree(domTreeId, m) {
         let domTree = this.domManager.getDom(domTreeId);
-        let model = this.models.find((x) => x.name === domTreeId);
-        let dom = domTree.domTreeFunction();
+        let model = m === undefined ? this.models.find((x) => x.name === domTreeId) : m;
+        let dom = domTree.render(model);
         const events = this.eventManager.getEventsForTree(domTreeId);
         events.forEach((x) => {
-            const i = dom.findIndex(x.elementId);
+            let element = this.domManager.searchElementInDom(dom, x.elementId);
             let extension = new Object();
-            extension[x.name] = x.action;
-            dom[i] = {
-                ...domTree[i],
+            extension[x.name] = x.action === undefined ? (e) => actionManager.callAction(x.actionName, e) : (e) => a.action(e);
+            element.extend = element.extend === undefined ? [] : element.extend;
+            element = {
+                ...domTree,
                 extend: {
-                    ...dom[i].extend,
+                    ...element.extend,
                     ...extension,
                 },
             };
         });
-        renderDOM(domTree.rootElementId, dom);
+        renderDOM(domTree.rootElementId, createDOM(dom));
     }
 }
 
@@ -107,16 +118,31 @@ class DomManager {
         this.domArray = [];
     }
 
-    addDom(name, rootElementId, dom) {
+    addDom(name, rootElementId, render) {
         this.domArray.push({
             name: name,
             rootElementId: rootElementId,
-            dom: dom,
+            render: render,
         });
     }
 
     getDom(name) {
         return this.domArray.find((x) => x.name === name);
+    }
+
+    searchElementInDom(dom, elementId) {
+        let result = undefined;
+        dom.forEach((x) => {
+            if (x.id === elementId) {
+                result = x;
+            } else if (Array.isArray(x.content)) {
+                const result2 = searchElementInDom(x.content, elementId);
+                if (result !== undefined) {
+                    result = result2;
+                }
+            }
+        });
+        return result;
     }
 }
 
@@ -137,6 +163,22 @@ class EventManager {
             eventId: eventId,
             eventName: eventName,
             action: action,
+            isEnabled: true,
+        });
+        return true;
+    }
+
+    addEventA(elementId, domTreeId, eventId, eventName, actionName) {
+        if (!parameterValidator([elementId, domTreeId, eventId, eventName, actionName])) {
+            log();
+            return false;
+        }
+        this.events.push({
+            elementId: elementId,
+            domTreeId: domTreeId,
+            eventId: eventId,
+            eventName: eventName,
+            actionName: actionName,
             isEnabled: true,
         });
         return true;
@@ -277,10 +319,10 @@ function addEvent(elementId, eventName, action) {
     }
     if (!parameterValidator([elementId])) {
         const e = document.body;
-            e.addEventListener(eventName, (event) => {
-                action(event);
+        e.addEventListener(eventName, (event) => {
+            action(event);
         });
-            return true;
+        return true;
     }
     return workWithElement(elementId, (element) => {
         element.addEventListener(eventName, (event) => {

@@ -11,8 +11,8 @@
     <script>
 
         // Create array of elements
-        function getDom() {
-            const pos = positionOfU.get();
+        function getDom(posit) {
+            const pos = posit.model.get();
             const elements = [
                 {
                     type: "div",
@@ -67,58 +67,121 @@
                 },
 
             ];
-            return createDOM(elements);
+            return elements;
         }
-        const position = new Property(false);
-        let oldPosition = { x: 0, y: 0 };
-        const positionOfU = new Property({x: 0, y: 0}, () => render());
-        const isDown = new Property(false);
 
-        // Create ActionManager
-        const actionManager = new ActionManager();
+        const facilitymanager = new FacilityManager(
+            new EventManager((x) => this.renderTree(x, this.models.find((y) => y.name === x))),
+            new ActionManager(),
+            new DomManager(),
+            null
+        );
 
-        // Create DOM from array and render
-        function render() {
-            renderDOM("app", getDom(), [
-                () => {
-                    addMouseMoveEvent("main", (event) => {
-                        event.preventDefault();
-                        actionManager.callAction("mousemove", event);
-                    });
-                    addEvent("main", "blur",(event) => {
-                        event.preventDefault();
-                        actionManager.callAction("mousedown", event);
-                    });
-                    addMouseDownEvent("main", (event) => {
-                        event.preventDefault();
-                        actionManager.callAction("mousedown", event);
-                    });
-                    addMouseUpEvent("main", (event) => {
-                        event.preventDefault();
-                        actionManager.callAction("mouseup", event);
-                    });
-                }]);
-        }
-        render();
+        facilitymanager.addView({
+            name: "main",
+            rootElementId: "app",
+            render: (x) => getDom(x),
+            events: [{
+                elementId: "main",
+                domTreeId: "main",
+                eventId: "mousemove",
+                eventName: "mousemove",
+                actionName: "mousemove"
+            }, {
+                elementId: "main",
+                domTreeId: "main",
+                eventId: "mousedown",
+                eventName: "mousedown",
+                actionName: "mousedown"
+            }, {
+                elementId: "main",
+                domTreeId: "main",
+                eventId: "mouseup",
+                eventName: "mouseup",
+                actionName: "mouseup"
+            }],
+            model: {
+                x: 0,
+                y: 0
+            }
+        });
 
-        // Add action and functions to invoke
-        actionManager.addAction("mousemove", [
-            (event) => {
-                if (isDown.get()) {
-                    let posi = getMousePosition(event);
-                    const delta = { x: oldPosition.x - posi.x, y: oldPosition.y - posi.y };
-                    posi = { x: posi.x, y: posi.y }
-                    positionOfU.set(posi);
-                    oldPosition = positionOfU.get();
-                }
-            },
+        facilitymanager.addActions([{
+                actionName: "mousemove",
+                listeners: [
+                    (a,x) => {
+                        facilitymanager.getAndSetModel("main", () => {
+                            return {
+                                x: x.clientX,
+                                y: x.clientY,
+                            }
+                        })
+                    },
+                ]
+            }, {
+                actionName: "mousedown",
+                listeners: [
+                    () => { facilitymanager.eventManager.changeEventActivity("mousemove", true); },
+                ]
+            }, {
+                actionName: "mouseup",
+                listeners: [
+                    () => { facilitymanager.eventManager.changeEventActivity("mousemove", false); },
+                ]
+            }
         ]);
-        actionManager.addAction("mousedown", [
-            () => { isDown.set(true); },
-        ]);
-        actionManager.addAction("mouseup", [
-            () => { isDown.set(false); },
-        ]);
+        facilitymanager.renderTree("main");
+
+        //const position = new Property(false);
+        //let oldPosition = { x: 0, y: 0 };
+        //const positionOfU = new Property({ x: 0, y: 0 }, () => render());
+        //const isDown = new Property(false);
+
+        //// Create ActionManager
+        //const actionManager = new ActionManager();
+
+        //// Create DOM from array and render
+        //function render() {
+        //    renderDOM("app", getDom(), [
+        //        () => {
+        //            addMouseMoveEvent("main", (event) => {
+        //                event.preventDefault();
+        //                actionManager.callAction("mousemove", event);
+        //            });
+        //            addEvent("main", "blur", (event) => {
+        //                event.preventDefault();
+        //                actionManager.callAction("mousedown", event);
+        //            });
+        //            addMouseDownEvent("main", (event) => {
+        //                event.preventDefault();
+        //                actionManager.callAction("mousedown", event);
+        //            });
+        //            addMouseUpEvent("main", (event) => {
+        //                event.preventDefault();
+        //                actionManager.callAction("mouseup", event);
+        //            });
+        //        }]);
+        //}
+        //render();
+
+        //// Add action and functions to invoke
+        //actionManager.addAction("mousemove", [
+        //    (event) => {
+        //        if (isDown.get()) {
+        //            let posi = getMousePosition(event);
+        //            const delta = { x: oldPosition.x - posi.x, y: oldPosition.y - posi.y };
+        //            posi = { x: posi.x, y: posi.y }
+        //            positionOfU.set(posi);
+        //            oldPosition = positionOfU.get();
+        //        }
+        //    },
+        //]);
+        //actionManager.addAction("mousedown", [
+        //    () => { isDown.set(true); },
+        //]);
+        //actionManager.addAction("mouseup", [
+        //    () => { isDown.set(false); },
+        //]);
     </script>
 </body>
 </html>
