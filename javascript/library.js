@@ -45,20 +45,56 @@ class DomBauMeister {
 // Level 3
 // High level classes
 
-class Facilitymanager {
+class FacilityManager {
     constructor(eventManager, actionManager, domManager, config) {
         this.actionManager = actionManager;
         this.eventManager = eventManager;
         this.domManager = domManager;
         this.config = config;
-        this.domTrees = [];
+        this.models = [];
+    }
+
+    addActions(actions) {
+        if (Array.isArray(actions)) {
+            actions.forEach((x) => this.actionManager.addAction(x.actionName, x.listeners));
+        }
     }
 
     addView(view) {
-        if (!parameterValidator([view.name, view.domTree, view.events, view.actions])) {
+        if (!parameterValidator([view.name, rootElementId, view.domTreeFunction, view.events, view.model])) {
             log();
             return false;
         }
+        this.domManager.add(view.name, rootElementId, view.domTree);
+        if (Array.isArray(view.events)) {
+            view.events.forEach((x) => this.eventManager.addAction(x.elementId, x.domTreeId, x.eventId, x.eventName, x.action));
+        }
+        this.models.push({
+            name: view.name,
+            model: new Property(view.model, (m) => {
+                this.render(view.name);
+            }),
+        });
+    }
+
+    render(domTreeId) {
+        let domTree = this.domManager.getDom(domTreeId);
+        let model = this.models.find((x) => x.name === domTreeId);
+        let dom = domTree.domTreeFunction();
+        const events = this.eventManager.getEventsForTree(domTreeId);
+        events.forEach((x) => {
+            const i = dom.findIndex(x.elementId);
+            let extension = new Object();
+            extension[x.name] = x.action;
+            dom[i] = {
+                ...domTree[i],
+                extend: {
+                    ...dom[i].extend,
+                    ...extension,
+                },
+            };
+        });
+        renderDOM(domTree.rootElementId, dom);
     }
 }
 
@@ -71,15 +107,16 @@ class DomManager {
         this.domArray = [];
     }
 
-    addDom(name, dom) {
+    addDom(name, rootElementId, dom) {
         this.domArray.push({
             name: name,
+            rootElementId: rootElementId,
             dom: dom,
         });
     }
 
     getDom(name) {
-        return this.domArray.find((x) => x.name === name).dom;
+        return this.domArray.find((x) => x.name === name);
     }
 }
 
@@ -109,7 +146,7 @@ class EventManager {
         if (!parameterValidator([domTreeId])) {
             log();
         }
-        return this.events.filter((x) => x.domTreeId === domTreeId);
+        return this.events.filter((x) => x.domTreeId === domTreeId && x.isEnabled);
     }
 
     getEventsForElement(elementId) {
