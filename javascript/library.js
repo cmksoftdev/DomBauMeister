@@ -31,24 +31,57 @@ class Property {
     }
 }
 
+
+// Level 4
+// Framework level
+
+class DomBauMeister {
+    constructor(config) {
+        this.config = config;
+    }
+}
+
+
 // Level 3
 // High level classes
 
-class FacilityManager {
-    constructor(eventManager, actionManager, config) {
+class Facilitymanager {
+    constructor(eventManager, actionManager, domManager, config) {
         this.actionManager = actionManager;
         this.eventManager = eventManager;
+        this.domManager = domManager;
         this.config = config;
         this.domTrees = [];
     }
 
     addView(view) {
-
+        if (!parameterValidator([view.name, view.domTree, events, actions])) {
+            log();
+            return false;
+        }
     }
 }
 
+
 // Level 2
 // Upper level functions and classes
+
+class DomManager {
+    constructor() {
+        this.domArray = [];
+    }
+
+    addDom(name, dom) {
+        this.domArray.push({
+            name: name,
+            dom: dom,
+        });
+    }
+
+    getDom(name) {
+        return this.domArray.find((x) => x.name === name).dom;
+    }
+}
 
 class EventManager {
     constructor(onChange) {
@@ -102,6 +135,7 @@ class EventManager {
         this.onChange(this.events[i].domTreeId);
     }
 }
+
 
 // Level 1
 // Lower level functions and classes
@@ -223,6 +257,7 @@ function createHtmlElement(element) {
     let style = null;
     let content = null;
     let id = null;
+    let events = null;
     let extend = null;
     if (element.style !== undefined && element.style !== null) {
         style = " style=\"" + element.style + "\"";
@@ -236,7 +271,13 @@ function createHtmlElement(element) {
     }
     if (element.id !== undefined && element.id !== null) {
         id = " id=\"" + element.id + "\"";
-    } if (element.extend !== undefined && element.extend !== null) {
+    }
+    if (element.events !== undefined && element.events !== null) {
+        for (let e in events.events) {
+            events = " " + e + "=\"" + element.events[e] + "\"";
+        }
+    }
+    if (element.extend !== undefined && element.extend !== null) {
         for (let e in element.extend) {
             extend = " " + e + "=\"" + element.extend[e] + "\"";
         }
