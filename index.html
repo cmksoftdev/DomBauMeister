@@ -90,15 +90,15 @@
         //        y: 0
         //    }
         //});
-
+        const windowtest = getWindowView("app2","window1", 200, 400, "Help", "Textinhalt", "---");
         facilitymanager.addView(windowtest);
 
         facilitymanager.addActions([{
-            actionName: "mousemove",
+            actionName: "window1_mousemove",
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.getAndSetModel("window", (m) => {
+                    facilitymanager.getAndSetModel("window1", (m) => {
                         return {
                             ...m,
                             x: m.x + x.clientX - m.xOld,
@@ -110,15 +110,15 @@
                 },
             ]
         }, {
-            actionName: "mousemove2",
+                actionName: "window1_mousemove2",
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.getAndSetModel("window", (m) => {
+                    facilitymanager.getAndSetModel("window1", (m) => {
                         return {
                             ...m,
-                            width: m.width + x.clientX - m.xOld2,
-                            height: m.height + x.clientY - m.yOld2,
+                            width: (m.width + x.clientX - m.xOld2) < 180 ? 180 : (m.width + x.clientX - m.xOld2),
+                            height: (m.height + x.clientY - m.yOld2) < 180 ? 180 : (m.height + x.clientY - m.yOld2),
                             xOld2: x.clientX,
                             yOld2: x.clientY,
                         }
@@ -126,12 +126,12 @@
                 },
             ]
         }, {
-            actionName: "mousedown",
+                actionName: "window1_mousedown",
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity("mousemove", true);
-                    facilitymanager.getAndSetModel("window", (m) => {
+                    facilitymanager.eventManager.changeEventActivity("window1_mousemove", true);
+                    facilitymanager.getAndSetModel("window1", (m) => {
                         return {
                             ...m,
                             xOld: x.clientX,
@@ -140,12 +140,12 @@
                     }) },
             ]
         }, {
-            actionName: "mousedown2",
+                actionName: "window1_mousedown2",
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity("mousemove2", true);
-                    facilitymanager.getAndSetModel("window", (m) => {
+                    facilitymanager.eventManager.changeEventActivity("window1_mousemove2", true);
+                    facilitymanager.getAndSetModel("window1", (m) => {
                         return {
                             ...m,
                             xOld2: x.clientX,
@@ -155,16 +155,16 @@
                 },
             ]
         }, {
-            actionName: "mouseup",
+                actionName: "window1_mouseup",
             listeners: [
                 () => {
-                    facilitymanager.eventManager.changeEventActivity("mousemove", false);
-                    facilitymanager.eventManager.changeEventActivity("mousemove2", false);
+                    facilitymanager.eventManager.changeEventActivity("window1_mousemove", false);
+                    facilitymanager.eventManager.changeEventActivity("window1_mousemove2", false);
                 },
             ]
         }
         ]);
-        facilitymanager.renderTree("window");
+        facilitymanager.renderTree("window1");
         //facilitymanager.renderTree("main");
     </script>
 </body>

@@ -37,7 +37,12 @@ class Property {
 
 class DomBauMeister {
     constructor(config) {
-        this.config = config;
+        if (parameterValidator([config.logger])) {
+            this.logger = config.logger();
+        }
+        if (!parameterValidator([config.renderOnEventChange, config.renderOnModelChange, config.startView])) {
+            this.config = config;
+        }
     }
 }
 
