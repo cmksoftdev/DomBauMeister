@@ -11,7 +11,7 @@ const windowtest = {
                     content: [
                         {
                             type: "div",
-                            style: "background-color:blue;color:white;font-size:20px;text-align:center;",
+                            style: "background-color:blue;color:white;font-size:20px;text-align:center;height:15%;",
                             content: [{
                                 type: "label",
                                 style: "background-color: color:white;font-size:22px;text-align:center;",
@@ -28,13 +28,13 @@ const windowtest = {
                         },
                         {
                             type: "div",
-                            style: "background-color: lightgray;width:100%;height:78%;",
+                            style: "background-color: lightgray;width:100%;height:75%;",
                             content: "Content",
                             id: "w2"
                         },
                         {
                             type: "div",
-                            style: "background-color: gray;",
+                            style: "background-color: gray;;height:10%;",
                             content: "footer",
                             id: "w3"
                         }],
