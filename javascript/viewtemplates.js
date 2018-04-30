@@ -11,7 +11,7 @@ const windowtest = {
                     content: [
                         {
                             type: "div",
-                            style: "background-color:blue;color:white;font-size:22px;text-align:center;",
+                            style: "background-color:blue;color:white;font-size:20px;text-align:center;",
                             content: [{
                                 type: "label",
                                 style: "background-color: color:white;font-size:22px;text-align:center;",
@@ -39,8 +39,8 @@ const windowtest = {
                             id: "w3"
                         }],
                     style: "position: absolute;" +
-                    "width:200px;height:200px;" +
-                    "border-style:ridge;border-color:lightgray;border-width:7px;;" +
+                    "width:" + model.width + "px;height:" + model.height + "px;" +
+                    "border-style:ridge;border-color:lightgray;border-width:7px;" +
                     "left:" + model.x + "px;top:" + model.y + "px;",
                     id: "wc"
                 },
@@ -58,6 +58,13 @@ const windowtest = {
         actionName: "mousemove",
         enabled: false
     }, {
+        elementId: "main",
+        domTreeId: "window",
+        eventId: "mousemove",
+        eventName: "mousemove2",
+        actionName: "mousemove2",
+        enabled: false
+    }, {
         elementId: "label",
         domTreeId: "window",
         eventId: "mousedown",
@@ -69,9 +76,17 @@ const windowtest = {
         eventId: "mouseup",
         eventName: "mouseup",
         actionName: "mouseup"
+    }, {
+            elementId: "w3",
+        domTreeId: "window",
+        eventId: "mousedown",
+        eventName: "mousedown2",
+        actionName: "mousedown2"
     }],
     model: {
         x: 300,
-        y: 0
+        y: 0,
+        height: 200,
+        width: 200,
     }
 };

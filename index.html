@@ -71,7 +71,10 @@
         }
 
         const facilitymanager = new FacilityManager(
-            new EventManager((x) => facilitymanager.renderTree(x, facilitymanager.models.find((y) => y.name === x).model.get())),
+            new EventManager((x) => {
+                if (x !== undefined)
+                    facilitymanager.renderTree(x, facilitymanager.models.find((y) => y.name === x).model.get())
+            }),
             new ActionManager(),
             new DomManager(),
             null
@@ -94,8 +97,10 @@
             actionName: "mousemove",
             listeners: [
                 (x) => {
+                    x.preventDefault();
                     facilitymanager.getAndSetModel("window", (m) => {
                         return {
+                            ...m,
                             x: m.x + x.clientX - m.xOld,
                             y: m.y + x.clientY - m.yOld,
                             xOld: x.clientX,
@@ -105,12 +110,29 @@
                 },
             ]
         }, {
+            actionName: "mousemove2",
+            listeners: [
+                (x) => {
+                    x.preventDefault();
+                    facilitymanager.getAndSetModel("window", (m) => {
+                        return {
+                            ...m,
+                            width: m.width + x.clientX - m.xOld2,
+                            height: m.height + x.clientY - m.yOld2,
+                            xOld2: x.clientX,
+                            yOld2: x.clientY,
+                        }
+                    });
+                },
+            ]
+        }, {
             actionName: "mousedown",
             listeners: [
                 (x) => {
+                    x.preventDefault();
                     facilitymanager.eventManager.changeEventActivity("mousemove", true);
                     facilitymanager.getAndSetModel("window", (m) => {
-                        return {                            x: x.clientX,
+                        return {
                             ...m,
                             xOld: x.clientX,
                             yOld: x.clientY,
@@ -118,9 +140,27 @@
                     }) },
             ]
         }, {
+            actionName: "mousedown2",
+            listeners: [
+                (x) => {
+                    x.preventDefault();
+                    facilitymanager.eventManager.changeEventActivity("mousemove2", true);
+                    facilitymanager.getAndSetModel("window", (m) => {
+                        return {
+                            ...m,
+                            xOld2: x.clientX,
+                            yOld2: x.clientY,
+                        }
+                    })
+                },
+            ]
+        }, {
             actionName: "mouseup",
             listeners: [
-                () => { facilitymanager.eventManager.changeEventActivity("mousemove", false); },
+                () => {
+                    facilitymanager.eventManager.changeEventActivity("mousemove", false);
+                    facilitymanager.eventManager.changeEventActivity("mousemove2", false);
+                },
             ]
         }
         ]);

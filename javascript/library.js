@@ -195,18 +195,18 @@ class EventManager {
         if (!parameterValidator([elementId])) {
             log();
         }
-        return this.events.filter((x) => x.elementId === elementId);
+        return this.events.filter((x) => x.eventName === elementId);
     }
 
     getEventsById(eventId) {
         if (!parameterValidator([eventId])) {
             log();
         }
-        return this.events.filter((x) => x.eventId === eventId);
+        return this.events.filter((x) => x.eventName === eventId);
     }
 
     changeEventActivity(eventId, isEnabled, action) {
-        const i = this.events.findIndex((x) => x.eventId === eventId);
+        const i = this.events.findIndex((x) => x.eventName === eventId);
         this.events[i] = {
             ...this.events[i],
             isEnabled: isEnabled,
