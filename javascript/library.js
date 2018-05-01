@@ -97,7 +97,8 @@ class FacilityManager {
         let domTree = this.domManager.getDom(domTreeId);
         let model = m === undefined ? this.models.find((x) => x.name === domTreeId).model.get() : m;
         let dom = domTree.render(model);
-        const events = this.eventManager.events.filter((x) => x.isEnabled);
+        const events = this.eventManager.getEventsForTree(domTreeId);
+        //const events = this.eventManager.events.filter((x) => x.isEnabled);
         events.forEach((x) => {
             if (x.action !== undefined)
                 removeEvent(x.elementId, x.eventId, (e) => x.action(e));
@@ -162,15 +163,18 @@ class EventManager {
             log();
             return false;
         }
-        this.events.push({
-            elementId: elementId,
-            domTreeId: domTreeId,
-            eventId: eventId,
-            eventName: eventName,
-            action: action,
-            isEnabled: enabled !== undefined ? enabled : true,
-        });
-        return true;
+        if (this.events.find((x) => x.eventName === eventName) === undefined) {
+            this.events.push({
+                elementId: elementId,
+                domTreeId: domTreeId,
+                eventId: eventId,
+                eventName: eventName,
+                action: action,
+                isEnabled: enabled !== undefined ? enabled : true,
+            });
+            return true;
+        }
+        return false;
     }
 
     addEventA(elementId, domTreeId, eventId, eventName, actionName, enabled) {
@@ -178,15 +182,18 @@ class EventManager {
             log();
             return false;
         }
-        this.events.push({
-            elementId: elementId,
-            domTreeId: domTreeId,
-            eventId: eventId,
-            eventName: eventName,
-            actionName: actionName,
-            isEnabled: enabled !== undefined ? enabled : true,
-        });
-        return true;
+        if (this.events.find((x) => x.eventName === eventName) === undefined) {
+            this.events.push({
+                elementId: elementId,
+                domTreeId: domTreeId,
+                eventId: eventId,
+                eventName: eventName,
+                actionName: actionName,
+                isEnabled: enabled !== undefined ? enabled : true,
+            });
+            return true;
+        }
+        return false;
     }
 
     getEventsForTree(domTreeId) {
@@ -225,6 +232,17 @@ class EventManager {
 
 // Level 1
 // Lower level functions and classes
+
+function createStyles(styles) {
+    if (Array.isArray(styles)) {
+        let styleString = "style=\"";
+        styles.forEach((x) => {
+            styleString += x.key + ":" + x.value + ";";
+        });
+        styleString += "\"";
+        return styleString;
+    }
+}
 
 class ActionManager {
     constructor() {
@@ -408,13 +426,15 @@ function renderDOM(rootElementId, dom, actions) {
 
 function createDOM(elements) {
     let dom = "";
-    elements.forEach((x) => {
-        if (Array.isArray(x)) {
-            dom += createDOM(x);
-        } else {
-            dom += createHtmlElement(x);
-        }
-    });
+    if (Array.isArray(elements)) {
+        elements.forEach((x) => {
+            if (Array.isArray(x)) {
+                dom += createDOM(x);
+            } else {
+                dom += createHtmlElement(x);
+            }
+        });
+    }
     return dom;
 }
 

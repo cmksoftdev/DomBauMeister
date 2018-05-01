@@ -5,71 +5,14 @@
     <title>Title</title>
 </head>
 
-<body>
+<body bgcolor="#00BFFF">
+    <p id="icon"></p>
+    <p id="icon2"></p>
     <p id="app"></p>
-    <p id="app2"></p>
+    <div id="app2"></div>
     <script src="javascript/library.js"></script>
     <script src="javascript/viewtemplates.js"></script>
     <script>
-        // Create array of elements
-        function getDom(pos) {
-            const elements = [
-                {
-                    type: "div",
-                    style: "position:fixed;width:100%;height:80%;",
-                    content: [
-                        {
-                            type: "div",
-                            extend: {
-                                class: ".testclass"
-                            },
-                            content: [
-                                {
-                                    type: "h1",
-                                    content: "Window Title",
-                                    id: "u"
-                                }],
-                            style: "position: absolute;left:" + pos.x + "px;top:" + pos.y + "px;",
-                            id: "uc"
-                        },
-                        {
-                            type: "div",
-                            content: [
-                                {
-                                    type: "div",
-                                    content: "test2",
-                                    style: "color:blue;"
-                                },
-                                {
-                                    type: "div",
-                                    content: "test2"
-                                },
-                            ],
-                            id: "test1"
-                        },
-                        {
-                            type: "div",
-                            content: "test2",
-                            id: "test2"
-                        },
-                        {
-                            type: "div",
-                            content: "test3",
-                            id: "test3"
-                        },
-                        {
-                            type: "div",
-                            content: "test4",
-                            id: "test4"
-                        },
-                    ],
-                    id: "main"
-                },
-
-            ];
-            return elements;
-        }
-
         const facilitymanager = new FacilityManager(
             new EventManager((x) => {
                 if (x !== undefined)
@@ -80,92 +23,28 @@
             null
         );
 
-        //facilitymanager.addView({
-        //    name: "main",
-        //    rootElementId: "app",
-        //    render: (x) => getDom(x),
-        //    events: [],
-        //    model: {
-        //        x: 0,
-        //        y: 0
-        //    }
-        //});
-        const windowtest = getWindowView("app2","window1", 200, 400, "Help", "Textinhalt", "---");
+        const icon2 = getIconView("icon2", "https://upload.wikimedia.org/wikipedia/commons/8/8e/Icon_tools.svg", "icon2", 50, 180, "Settings", "window2_show"); 
+        const windowtest = getWindowView("app", "window1", 100, 120, "Help", [{
+            type: "label",
+            style: "height:100px;width:100px;",
+            content: "This is the help window."
+        }, {
+            type: "img",
+            style: "position: relative;height:40%;width:40%;margin:auto;",
+            extend: {
+                src: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg"
+            }
+        }], "---");
+        const windowtest2 = getWindowView("app2", "window2", 300, 100, "Settings", "Settings comming soon...", "---");
+        const icon = getIconView("icon", "https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg", "icon", 50, 50, "Help", "window1_show");
         facilitymanager.addView(windowtest);
-
-        facilitymanager.addActions([{
-            actionName: "window1_mousemove",
-            listeners: [
-                (x) => {
-                    x.preventDefault();
-                    facilitymanager.getAndSetModel("window1", (m) => {
-                        return {
-                            ...m,
-                            x: m.x + x.clientX - m.xOld,
-                            y: m.y + x.clientY - m.yOld,
-                            xOld: x.clientX,
-                            yOld: x.clientY,
-                        }
-                    });
-                },
-            ]
-        }, {
-                actionName: "window1_mousemove2",
-            listeners: [
-                (x) => {
-                    x.preventDefault();
-                    facilitymanager.getAndSetModel("window1", (m) => {
-                        return {
-                            ...m,
-                            width: (m.width + x.clientX - m.xOld2) < 180 ? 180 : (m.width + x.clientX - m.xOld2),
-                            height: (m.height + x.clientY - m.yOld2) < 180 ? 180 : (m.height + x.clientY - m.yOld2),
-                            xOld2: x.clientX,
-                            yOld2: x.clientY,
-                        }
-                    });
-                },
-            ]
-        }, {
-                actionName: "window1_mousedown",
-            listeners: [
-                (x) => {
-                    x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity("window1_mousemove", true);
-                    facilitymanager.getAndSetModel("window1", (m) => {
-                        return {
-                            ...m,
-                            xOld: x.clientX,
-                            yOld: x.clientY,
-                        }
-                    }) },
-            ]
-        }, {
-                actionName: "window1_mousedown2",
-            listeners: [
-                (x) => {
-                    x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity("window1_mousemove2", true);
-                    facilitymanager.getAndSetModel("window1", (m) => {
-                        return {
-                            ...m,
-                            xOld2: x.clientX,
-                            yOld2: x.clientY,
-                        }
-                    })
-                },
-            ]
-        }, {
-                actionName: "window1_mouseup",
-            listeners: [
-                () => {
-                    facilitymanager.eventManager.changeEventActivity("window1_mousemove", false);
-                    facilitymanager.eventManager.changeEventActivity("window1_mousemove2", false);
-                },
-            ]
-        }
-        ]);
-        facilitymanager.renderTree("window1");
-        //facilitymanager.renderTree("main");
+        facilitymanager.addView(windowtest2);
+        facilitymanager.addView(icon);
+        facilitymanager.addView(icon2);
+        facilitymanager.addActions(windowtest.actions);
+        facilitymanager.addActions(windowtest2.actions);
+        facilitymanager.renderTree("icon");
+        facilitymanager.renderTree("icon2");
     </script>
 </body>
 </html>
