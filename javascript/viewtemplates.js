@@ -122,7 +122,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.getAndSetModel(name, (m) => {
+                    dbm.facilitymanager.getAndSetModel(name, (m) => {
                         return {
                             ...m,
                             x: m.x + x.clientX - m.xOld,
@@ -138,7 +138,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.getAndSetModel(name, (m) => {
+                    dbm.facilitymanager.getAndSetModel(name, (m) => {
                         return {
                             ...m,
                             width: (m.width + x.clientX - m.xOld2) < 180 ? 180 : (m.width + x.clientX - m.xOld2),
@@ -154,9 +154,9 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity(name + "_mouseup", true);
-                    facilitymanager.eventManager.changeEventActivity(name + "_mousemove", true);
-                    facilitymanager.getAndSetModel(name, (m) => {
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mouseup", true);
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mousemove", true);
+                    dbm.facilitymanager.getAndSetModel(name, (m) => {
                         return {
                             ...m,
                             xOld: x.clientX,
@@ -171,9 +171,9 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             listeners: [
                 (x) => {
                     x.preventDefault();
-                    facilitymanager.eventManager.changeEventActivity(name + "_mouseup", true);
-                    facilitymanager.eventManager.changeEventActivity(name + "_mousemove2", true);
-                    facilitymanager.getAndSetModel(name, (m) => {
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mouseup", true);
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mousemove2", true);
+                    dbm.facilitymanager.getAndSetModel(name, (m) => {
                         return {
                             ...m,
                             xOld2: x.clientX,
@@ -187,10 +187,10 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             actionName: name + "_mouseup",
             listeners: [
                 () => {
-                    facilitymanager.eventManager.changeEventActivity(name + "_mousemove", false);
-                    facilitymanager.eventManager.changeEventActivity(name + "_mousemove2", false);
-                    facilitymanager.eventManager.changeEventActivity(name + "_mouseup", false);
-                    facilitymanager.getAndSetModel(name, (m) => {
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mousemove", false);
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mousemove2", false);
+                    dbm.facilitymanager.eventManager.changeEventActivity(name + "_mouseup", false);
+                    dbm.facilitymanager.getAndSetModel(name, (m) => {
                         return {
                             ...m,
                             isMouseDown: false,
@@ -201,7 +201,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
         }, {
             actionName: name + "_hide",
             listeners: [() => {
-                facilitymanager.getAndSetModel(name, (m) => {
+                dbm.facilitymanager.getAndSetModel(name, (m) => {
                     return {
                         ...m,
                         isVisible: false,
@@ -212,7 +212,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
         }, {
             actionName: name + "_show",
             listeners: [() => {
-                facilitymanager.getAndSetModel(name, (m) => {
+                dbm.facilitymanager.getAndSetModel(name, (m) => {
                     return {
                         ...m,
                         isVisible: true,

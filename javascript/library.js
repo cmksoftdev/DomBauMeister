@@ -40,9 +40,49 @@ class DomBauMeister {
         if (parameterValidator([config.logger])) {
             this.logger = config.logger();
         }
-        if (!parameterValidator([config.renderOnEventChange, config.renderOnModelChange, config.startView])) {
-            this.config = config;
+        if (!parameterValidator([config.rootElement, config.renderOnEventChange, config.renderOnModelChange])) {
+            throw error;
         }
+        this.config = config;
+        this.facilitymanager = new FacilityManager(
+            new EventManager((x) => {
+                if (x !== undefined)
+                    this.facilitymanager.renderTree(x, this.facilitymanager.models.find((y) => y.name === x).model.get())
+            }),
+            new ActionManager(),
+            new DomManager(),
+            null
+        );
+        this.forker = new Forker(this.config.rootElement);
+    }
+
+    addViews(views) {
+        if (Array.isArray(views)) {
+            views.forEach((x) => {
+                this.forker.addFork(x.name);
+                x.rootElementId = x.name;
+                this.facilitymanager.addView(x);
+                if (x.actions !== undefined) {
+                    this.facilitymanager.addActions(x.actions);
+                }
+            });
+        }
+    }
+
+    addActions(actions) {
+        if (Array.isArray(views)) {
+            views.forEach((x) => {
+                this.facilitymanager.addActions(x);
+            });
+        }
+    }
+
+    start() {
+        const dom = createDOM(this.forker.getTreeForks());
+        renderDOM(this.config.rootElement, dom);
+        this.facilitymanager.domManager.domArray.forEach((x) => {
+            this.facilitymanager.renderTree(x.name);
+        });
     }
 }
 
@@ -98,7 +138,6 @@ class FacilityManager {
         let model = m === undefined ? this.models.find((x) => x.name === domTreeId).model.get() : m;
         let dom = domTree.render(model);
         const events = this.eventManager.getEventsForTree(domTreeId);
-        //const events = this.eventManager.events.filter((x) => x.isEnabled);
         events.forEach((x) => {
             if (x.action !== undefined)
                 removeEvent(x.elementId, x.eventId, (e) => x.action(e));
@@ -120,7 +159,21 @@ class FacilityManager {
 // Upper level functions and classes
 
 class Forker {
+    constructor(rootElement) {
+        this.rootElement = rootElement;
+        this.domForks = [];
+    }
 
+    addFork(id) {
+        this.domForks.push({
+            type: "div",
+            id: id,
+        });
+    }
+
+    getTreeForks() {
+        return this.domForks;
+    }
 }
 
 class DomManager {
