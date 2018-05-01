@@ -1,8 +1,7 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+﻿<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Title</title>
+    <title>DomBauMeister.js Test</title>
 </head>
 
 <body bgcolor="#00BFFF">
@@ -67,7 +66,7 @@
             "https://upload.wikimedia.org/wikipedia/commons/8/8e/Icon_tools.svg",
             "icon1",
             50,
-            180,
+            150,
             "Settings",
             "window2_show");
         const icon2 = getIconView(
@@ -83,7 +82,7 @@
             "https://upload.wikimedia.org/wikipedia/commons/f/f0/Icon-notepad.svg",
             "icon3",
             50,
-            310,
+            250,
             "Editor",
             "windoweditor_show");
         const icon4 = getIconView(
@@ -91,23 +90,25 @@
             "https://upload.wikimedia.org/wikipedia/commons/c/c4/OOjs_UI_icon_article-ltr.svg",
             "icon4",
             50,
-            440,
+            350,
             "Logger",
             "windowlogger_show");
 
         // Add views to framework
         dbm.addViews([windowtest, windowtest2, windoweditor, windowlogger, icon1, icon2, icon3, icon4]);
+
+        // Add timer to settings window
         dbm.addActions([{
             actionName: "timer",
             listeners: [() => {
                 var currentdate = new Date();
-                var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                    + (currentdate.getMonth() + 1) + "/"
-                    + currentdate.getFullYear() + " @ "
+                var datetime = "Time: "
                     + currentdate.getHours() + ":"
                     + currentdate.getMinutes() + ":"
                     + currentdate.getSeconds();
-                dbm.injectModel("window2", { content: datetime });
+                dbm.injectModel("window2", {
+                    content: datetime
+                });
             }],
             interval: 1000,
         }]);

@@ -367,11 +367,13 @@ class ActionManager {
                             if (item.interval !== undefined)
                                 i = index;
                         });
-                        this.callRepeatingAction(l, i, null);
-                        this.actions[i] = {
-                            ...this.actions[i],
-                            run: true
-                        };
+                        if (!this.actions[i].run) {
+                            this.callRepeatingAction(l, i, null);
+                            this.actions[i] = {
+                                ...this.actions[i],
+                                run: true
+                            };
+                        }
                     }
                     console.log("called " + actionName);
                 });
