@@ -53,9 +53,7 @@ How to use repeating actions<br />
             actionName: "timer",
             listeners: [() => {
                 var currentdate = new Date();
-                var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                    + (currentdate.getMonth() + 1) + "/"
-                    + currentdate.getFullYear() + " @ "
+                var datetime = "Time: "
                     + currentdate.getHours() + ":"
                     + currentdate.getMinutes() + ":"
                     + currentdate.getSeconds();
