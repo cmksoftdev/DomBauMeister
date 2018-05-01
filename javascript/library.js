@@ -531,8 +531,9 @@ function createHtmlElement(element) {
         }
     }
     if (element.extend !== undefined && element.extend !== null) {
+        extend = "";
         for (let e in element.extend) {
-            extend = " " + e + "=\"" + element.extend[e] + "\"";
+            extend += " " + e + "=\"" + element.extend[e] + "\"";
         }
     }
     if (element.type !== undefined && element.type !== null) {

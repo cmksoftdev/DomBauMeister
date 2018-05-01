@@ -58,7 +58,28 @@
             300,
             100,
             "Logger",
-            "test",
+            [{
+                type: "form",
+                style: "height:100px;width:100px;",
+                content: [{
+                    type: "input",
+                    id: "user",
+                    extend: {
+                        type: "text",
+                        maxlength: "30"
+                    },
+                    style: "height:23px;width:100%;pointer-events: all;margin:15px;",
+                }, {
+                    type: "input",
+                    id: "password",
+                    extend: {
+                        type: "password",
+                        maxlength: "30"
+                    },
+                    content: "Password",
+                    style: "height:23px;width:100%;pointer-events: all;",
+                }]
+            }],
             "---");
 
         const icon1 = getIconView(
