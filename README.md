@@ -1,7 +1,9 @@
-# JSLibrary
-Small JavaScript function collection
+# DBM.js
+DomBauMeister.js is a lightweight framework to create dynamic views
 
 ## Classes: 
+######  DomBauMeister<br />
+
 ######  ActionManager<br />
 Methods:<br />
   addAction(actionName, listeners)<br />
