@@ -109,7 +109,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             actionName: name + "_hide"
         }],
         model: {
-            isVisible: true,
+            isVisible: false,
             x: x,
             y: y,
             height: 200,

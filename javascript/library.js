@@ -70,10 +70,8 @@ class DomBauMeister {
     }
 
     addActions(actions) {
-        if (Array.isArray(views)) {
-            views.forEach((x) => {
-                this.facilitymanager.addActions(x);
-            });
+        if (Array.isArray(actions)) {
+            this.facilitymanager.addActions(actions);
         }
     }
 
@@ -82,6 +80,19 @@ class DomBauMeister {
         renderDOM(this.config.rootElement, dom);
         this.facilitymanager.domManager.domArray.forEach((x) => {
             this.facilitymanager.renderTree(x.name);
+        });
+    }
+
+    call(actionName, event) {
+        this.facilitymanager.actionManager.callAction(actionName, event);
+    }
+
+    injectModel(name, injection) {
+        this.facilitymanager.getAndSetModel(name, (x) => {
+            return {
+                ...x,
+                ...injection
+            };
         });
     }
 }
@@ -101,7 +112,12 @@ class FacilityManager {
 
     addActions(actions) {
         if (Array.isArray(actions)) {
-            actions.forEach((x) => this.actionManager.addAction(x.actionName, x.listeners));
+            actions.forEach((x) => {
+                if (x.interval === undefined)
+                    this.actionManager.addAction(x.actionName, x.listeners);
+                else
+                    this.actionManager.addRepeatingAction(x.actionName, x.listeners, x.interval);
+            });
         }
     }
 
@@ -320,19 +336,65 @@ class ActionManager {
         return true;
     }
 
+    addRepeatingAction(actionName, listeners, interval) {
+        if (!parameterValidator([actionName, listeners])) {
+            log();
+            return false;
+        }
+        this.actions.push({
+            actionType: actionName,
+            interval: interval,
+            listenerArray: listeners !== undefined &&
+                listeners !== null &&
+                Array.isArray(listeners) ? listeners : [],
+        });
+        return true;
+    }
+
     callAction(actionName, event) {
-        if (!parameterValidator([actionName, event])) {
+        if (!parameterValidator([actionName])) {
             log();
         }
         const action = this.actions.filter((x) => x.actionType === actionName);
         if (action !== undefined) {
             action.forEach((a) => {
                 a.listenerArray.forEach((l) => {
-                    l(event);
+                    if (a.interval === undefined)
+                        l(event);
+                    else {
+                        let i = -1;
+                        this.actions.forEach((item, index) => {
+                            if (item.interval !== undefined)
+                                i = index;
+                        });
+                        this.callRepeatingAction(l, i, null);
+                        this.actions[i] = {
+                            ...this.actions[i],
+                            run: true
+                        };
+                    }
                     console.log("called " + actionName);
                 });
             });
         }
+    }
+
+    callRepeatingAction(func, i, lastState) {
+        const action = this.actions[i];
+        if (action.run || lastState === null) {
+            console.log("called " + action.actionName);
+            const newState = func(lastState);
+            setTimeout(() => this.callRepeatingAction(func, i, newState), action.interval);
+        }
+    }
+
+    cancelRepeatingAction(actionName) {
+        let i = -1;
+        this.actions.forEach((item, index) => {
+            if (item.interval !== undefined)
+                i = index;
+        });
+        this.actions[i].run = false;
     }
 
     addListener(actionName, listener) {
