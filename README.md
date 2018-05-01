@@ -1,5 +1,33 @@
 # DBM.js
-DomBauMeister.js is a lightweight framework to create dynamic views.
+DomBauMeister.js is a lightweight framework to create dynamic views.<br />
+<br />
+######Views<br />
+Every view has its own model and render function. It can also have events and actions. The model includes informations like content or visibility and is used by the render function. The render function returns a array of elements, filled with values of the model. Everytime the model is changed by injectModel(name) the render function gets called to render the view.
+<br />
+<br />
+How to create a view:<br />
+```javascript
+{
+        name: "viewName",
+        rootElementId: "rootElement",
+        render: (model) => {
+            if (!model.isVisible)
+                return null;
+            const elements = [{
+                        type: "div",
+                        content: model.content,
+                        id: "id_of_element"
+                    }];
+            return elements;
+        },
+        model: {
+            isVisible: true,
+            content: "text"
+        }
+}
+```
+
+
 
 ## Classes: 
 ######  DomBauMeister<br />
