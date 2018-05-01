@@ -15,12 +15,12 @@ const view = {
                 return null;
             const elements = [{
                         type: "div",
-                        content: model.content,
+                        content: model.content, // Here we set content from model to the element 
                         id: "id_of_element"
                     }];
             return elements;
         },
-        model: {
+        model: { // This are the start values of the model
             isVisible: true,
             content: "text"
         }
