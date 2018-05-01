@@ -119,6 +119,10 @@ class FacilityManager {
 // Level 2
 // Upper level functions and classes
 
+class Forker {
+
+}
+
 class DomManager {
     constructor() {
         this.domArray = [];
@@ -303,6 +307,11 @@ function parameterValidator(parameterArray) {
     }
 }
 
+let zindex = 0;
+function getZindex() {
+    zindex++;
+    return zindex;
+}
 
 function log(message) {
     if (logger !== null)
@@ -383,7 +392,11 @@ function createHtmlElement(element) {
     let events = null;
     let extend = null;
     if (element.style !== undefined && element.style !== null) {
-        style = " style=\"" + element.style + "\"";
+        if (Array.isArray(element.style)) {
+            style = createStyles(element.style);
+        } else {
+            style = " style=\"" + element.style + "\"";
+        }        
     }
     if (element.content !== undefined && element.content !== null) {
         if (Array.isArray(element.content)) {

@@ -6,10 +6,14 @@
 </head>
 
 <body bgcolor="#00BFFF">
-    <p id="icon"></p>
+    <p id="icon1"></p>
     <p id="icon2"></p>
+    <p id="icon3"></p>
+    <p id="icon4"></p>
     <p id="app"></p>
     <div id="app2"></div>
+    <div id="app3"></div>
+    <div id="app4"></div>
     <script src="javascript/library.js"></script>
     <script src="javascript/viewtemplates.js"></script>
     <script>
@@ -23,7 +27,6 @@
             null
         );
 
-        const icon2 = getIconView("icon2", "https://upload.wikimedia.org/wikipedia/commons/8/8e/Icon_tools.svg", "icon2", 50, 180, "Settings", "window2_show"); 
         const windowtest = getWindowView("app", "window1", 100, 120, "Help", [{
             type: "label",
             style: "height:100px;width:100px;",
@@ -35,16 +38,32 @@
                 src: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg"
             }
         }], "---");
-        const windowtest2 = getWindowView("app2", "window2", 300, 100, "Settings", "Settings comming soon...", "---");
-        const icon = getIconView("icon", "https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg", "icon", 50, 50, "Help", "window1_show");
+        const windowtest2 = getWindowView("app2", "window2", 300, 100, "Settings", "test", "---");
+        const windoweditor = getWindowView("app3", "windoweditor", 300, 100, "Editor", [{
+            type: "textarea",
+            style: "pointer-events: all;"
+        }], "---");
+        const windowlogger = getWindowView("app4", "windowlogger", 300, 100, "Logger", "test", "---");
+        const icon1 = getIconView("icon1", "https://upload.wikimedia.org/wikipedia/commons/8/8e/Icon_tools.svg", "icon1", 50, 180, "Settings", "window2_show"); 
+        const icon2 = getIconView("icon2", "https://upload.wikimedia.org/wikipedia/commons/d/d9/Icon-round-Question_mark.svg", "icon2", 50, 50, "Help", "window1_show");
+        const icon3 = getIconView("icon3", "https://upload.wikimedia.org/wikipedia/commons/f/f0/Icon-notepad.svg", "icon3", 50, 310, "Editor", "windoweditor_show");
+        const icon4 = getIconView("icon4", "https://upload.wikimedia.org/wikipedia/commons/c/c4/OOjs_UI_icon_article-ltr.svg", "icon4", 50, 440, "Logger", "windowlogger_show");
         facilitymanager.addView(windowtest);
         facilitymanager.addView(windowtest2);
-        facilitymanager.addView(icon);
+        facilitymanager.addView(windoweditor);
+        facilitymanager.addView(windowlogger);
+        facilitymanager.addView(icon1);
         facilitymanager.addView(icon2);
+        facilitymanager.addView(icon3);
+        facilitymanager.addView(icon4);
         facilitymanager.addActions(windowtest.actions);
         facilitymanager.addActions(windowtest2.actions);
-        facilitymanager.renderTree("icon");
+        facilitymanager.addActions(windoweditor.actions);
+        facilitymanager.addActions(windowlogger.actions);
+        facilitymanager.renderTree("icon1");
         facilitymanager.renderTree("icon2");
+        facilitymanager.renderTree("icon3");
+        facilitymanager.renderTree("icon4");
     </script>
 </body>
 </html>

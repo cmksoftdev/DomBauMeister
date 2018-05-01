@@ -9,7 +9,22 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             const elements = [
                 {
                     type: "div",
-                    style: "position:fixed;width:100%;height:80%;pointer-events:none;",
+                    style: [{
+                        key: "position",
+                        value: "fixed"
+                    }, {
+                            key: "width",
+                            value: "100%"
+                        }, {
+                            key: "height",
+                            value: "80%"
+                    }, {
+                            key: "pointer-events",
+                            value: model.isMouseDown ? "all" : "none"
+                        }, {
+                            key: "z-index",
+                            value: getZindex()
+                        }, ],
                     content: [{
                         type: "div",
                         content: [
@@ -32,7 +47,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                             {
                                 type: "div",
                                 style: "background:lightgray;margin:5px;",
-                                content: content,
+                                content: model.content,
                                 id: name + "_w2"
                             },
                             {
@@ -99,6 +114,8 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             y: y,
             height: 200,
             width: 200,
+            isMouseDown: false,
+            content: content,
         },
         actions: [{
             actionName: name + "_mousemove",
@@ -144,8 +161,9 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                             ...m,
                             xOld: x.clientX,
                             yOld: x.clientY,
+                            isMouseDown: true,
                         }
-                    })
+                    });
                 },
             ]
         }, {
@@ -160,8 +178,9 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                             ...m,
                             xOld2: x.clientX,
                             yOld2: x.clientY,
+                            isMouseDown: true,
                         }
-                    })
+                    });
                 },
             ]
         }, {
@@ -171,6 +190,12 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                     facilitymanager.eventManager.changeEventActivity(name + "_mousemove", false);
                     facilitymanager.eventManager.changeEventActivity(name + "_mousemove2", false);
                     facilitymanager.eventManager.changeEventActivity(name + "_mouseup", false);
+                    facilitymanager.getAndSetModel(name, (m) => {
+                        return {
+                            ...m,
+                            isMouseDown: false,
+                        }
+                    });
                 },
             ]
         }, {
@@ -216,7 +241,7 @@ function getIconView(rootElement, imageUrl, name, x, y, content, actionName) {
                         content: [
                             {
                                 type: "img",
-                                style: "height:80px;width:80px;margin:auto;",
+                                style: "height:64px;width:64px;margin:auto;",
                                 extend: {
                                     src: imageUrl
                                 }
