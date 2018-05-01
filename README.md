@@ -1,6 +1,7 @@
 # DBM.js
 DomBauMeister.js is a lightweight framework to create dynamic views.
 <br />
+see a demo on http://cmk.bplaced.net/dbm.html
 <br />
 How to initialize DBM.js<br />
 ```javascript
