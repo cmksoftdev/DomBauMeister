@@ -41,29 +41,30 @@ const view = {
 };
 ```
 <br />
-###### Actions<br />
+ ######    Actions 
+<br />
 There are two different kinds of actions in DBM, normal actions and repeating actions. Actions can call one or more listeners, if invoked. Repeating actions are called again after a time interval, till they got canceled.
 <br />
 <br />
 How to use repeating actions<br />
+
 ```javascript
         dbm.addActions([{
             actionName: "timer",
             listeners: [() => {
                 var currentdate = new Date();
-                ...
+                var datetime = "Last Sync: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth() + 1) + "/"
+                    + currentdate.getFullYear() + " @ "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
                 dbm.injectModel("window2", {
                     content: datetime
                 });
             }],
             interval: 1000,
         }]);
-        dbm.facilitymanager.actionManager.addListener("window2_show", () => {
-            dbm.call("timer");
-        });
-        dbm.facilitymanager.actionManager.addListener("window2_hide", () => {
-            dbm.facilitymanager.actionManager.cancelRepeatingAction("timer");
-        });
 ```
 
 ## Classes: 
