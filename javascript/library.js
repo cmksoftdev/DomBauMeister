@@ -351,7 +351,7 @@ class ActionManager {
         return true;
     }
 
-    callAction(actionName, event) {
+    callAction(actionName, payload) {
         if (!parameterValidator([actionName])) {
             log();
         }
@@ -360,7 +360,7 @@ class ActionManager {
             action.forEach((a) => {
                 a.listenerArray.forEach((l) => {
                     if (a.interval === undefined)
-                        l(event);
+                        l(payload);
                     else {
                         let i = -1;
                         this.actions.forEach((item, index) => {
