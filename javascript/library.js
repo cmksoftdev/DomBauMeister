@@ -39,6 +39,7 @@ class DomBauMeister {
     constructor(config) {
         if (parameterValidator([config.logger])) {
             this.logger = config.logger();
+            log = this.logger;
         }
         if (!parameterValidator([config.rootElement, config.renderOnEventChange, config.renderOnModelChange])) {
             throw error;
@@ -336,6 +337,15 @@ class ActionManager {
         return true;
     }
 
+    removeAction(actionName) {
+        if (!parameterValidator([actionName, listeners])) {
+            log();
+            return false;
+        }
+        const i = this.actions.findIndex(action);
+        this.actions = this.actions.splice(i, 1);
+    }
+
     addRepeatingAction(actionName, listeners, interval) {
         if (!parameterValidator([actionName, listeners])) {
             log();
@@ -406,6 +416,17 @@ class ActionManager {
         const action = this.actions.find((x) => x.actionType === actionName);
         if (action !== undefined) {
             action.listenerArray.push(listener);
+        }
+    }
+
+    removeListener(actionName, listener) {
+        if (!parameterValidator([actionName, listener])) {
+            log();
+        }
+        const action = this.actions.find((x) => x.actionType === actionName);
+        if (action !== undefined) {
+            const i = action.listenerArray.findIndex(action);
+            action.listenerArray = action.listenerArray.splice(i, 1);
         }
     }
 }

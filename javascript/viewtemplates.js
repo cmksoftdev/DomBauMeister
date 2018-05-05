@@ -13,18 +13,18 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                         key: "position",
                         value: "fixed"
                     }, {
-                            key: "width",
-                            value: "100%"
-                        }, {
-                            key: "height",
-                            value: "80%"
+                        key: "width",
+                        value: "100%"
                     }, {
-                            key: "pointer-events",
-                            value: model.isMouseDown ? "all" : "none"
-                        }, {
-                            key: "z-index",
-                            value: getZindex()
-                        }, ],
+                        key: "height",
+                        value: "80%"
+                    }, {
+                        key: "pointer-events",
+                        value: model.isMouseDown ? "all" : "none"
+                    }, {
+                        key: "z-index",
+                        value: getZindex()
+                    },],
                     content: [{
                         type: "div",
                         content: [
@@ -46,7 +46,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                             },
                             {
                                 type: "div",
-                                style: "background:lightgray;margin:5px;",
+                                style: "background:lightgray;margin:5px;overflow: scroll;height:" + (model.height - 40) + "px;pointer-events: all;",
                                 content: model.content,
                                 id: name + "_w2"
                             },
@@ -273,6 +273,104 @@ function getIconView(rootElement, imageUrl, name, x, y, content, actionName) {
             isVisible: true,
             x: x,
             y: y
+        }
+    };
+}
+
+function getOverlayLoginView(rootElement, name, actionName) {
+    return {
+        name: name,
+        rootElementId: rootElement,
+        render: function getDom(model) {
+            if (!model.isVisible)
+                return null;
+            const elements = [{
+                type: "div",
+                style: "position: absolute;background-color:rgba(0,0,0,0.6);height:100%;width:100%;z-index:1000;pointer-events: all;position:fixed;top: 0;left: 0;",
+                content: [
+                    {
+                        type: "div",
+                        style: "margin:auto;height:200px;width:300px;position:absolute;" +
+                        "background-color:rgb(235,235,235);top:0;bottom: 0;left: 0;right: 0;" +
+                        "border-style:solid;border-color:gray;border-width:3px;box-shadow: 15px 10px rgba(0,0,0,0.2);border-radius: 5px;",
+                        content: [
+                            {
+                                type: "form",
+                                id: name + "_form",
+                                style: "height:100%;width:100%;float: left;",
+                                content: [{
+                                    type: "div",
+                                    content: [{
+                                        type: "label",
+                                        id: name + "_user_label",
+                                        content: "Username:",
+                                        style: "margin-left:30px;",
+                                    }],
+                                    style: "pointer-events: all;padding:10px;",
+                                }, {
+                                    type: "div",
+                                    content: [{
+                                        type: "input",
+                                        id: name + "_user_input",
+                                        extend: {
+                                            type: "text",
+                                            maxlength: "30"
+                                        },
+                                        style: "pointer-events:all;margin:auto;position:relative;display:block;width:90%;",
+                                    }],
+                                    style: "pointer-events: all;",
+                                }, {
+                                    type: "div",
+                                    content: [{
+                                        type: "label",
+                                        id: name + "_password_label",
+                                        content: "Password:",
+                                        style: "height:23px;pointer-events: all;margin-left:30px;",
+                                    }],
+                                    style: "pointer-events: all;padding:10px;",
+                                }, {
+                                    type: "div",
+                                    content: [{
+                                        type: "input",
+                                        id: name + "_password_input",
+                                        extend: {
+                                            type: "password",
+                                            maxlength: "30"
+                                        },
+                                        style: "pointer-events:all;margin:auto;position:relative;display:block;width:90%;",
+                                    }],
+                                    style: "pointer-events: all;",
+                                }, {
+                                    type: "div",
+                                    content: [{
+                                        type: "input",
+                                        id: name + "_button",
+                                        extend: {
+                                            type: "submit",
+                                            event: "dbm.call(\"submit\", this)",
+                                        },
+                                        style: "pointer-events:all;margin:auto;position:relative;display:block;padding:25px,5px;",
+                                    }],
+                                    style: "pointer-events: all;padding:10px;",
+                                }]
+                            }
+                        ],
+                        id: name + "_container"
+                    }],
+                id: name + "_overlay"
+            },
+            ];
+            return elements;
+        },
+        events: [{
+            elementId: name + "_form",
+            domTreeId: name,
+            eventId: "submit",
+            eventName: name + "_button",
+            actionName: actionName
+        }],
+        model: {
+            isVisible: true,
         }
     };
 }

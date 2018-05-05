@@ -49,7 +49,7 @@
             100,
             "Editor", [{
                 type: "textarea",
-                style: "pointer-events: all;"
+                style: "pointer-events: all;width:100%;height:100%;resize: none;"
             }],
             "---");
         const windowlogger = getWindowView(
@@ -81,6 +81,10 @@
                 }]
             }],
             "---");
+        const login = getOverlayLoginView(
+            "app",
+            "login",
+            "login");
 
         const icon1 = getIconView(
             "icon1",
@@ -116,7 +120,7 @@
             "windowlogger_show");
 
         // Add views to framework
-        dbm.addViews([windowtest, windowtest2, windoweditor, windowlogger, icon1, icon2, icon3, icon4]);
+        dbm.addViews([login, windowtest, windowtest2, windoweditor, windowlogger, icon1, icon2, icon3, icon4]);
 
         // Add timer to settings window
         dbm.addActions([{
@@ -133,16 +137,74 @@
             }],
             interval: 1000,
         }]);
+        dbm.addActions([{
+            actionName: "login",
+            listeners: [(x) => {
+                const password = document.getElementById("login_password_input").value;
+                const username = document.getElementById("login_user_input").value;
+                dbm.injectModel("login", {
+                    password: password,
+                    user: username,
+                });
+                //dbm.injectModel("windowlogger", {
+                //    isVisible: false,
+                //    content: "username: " + username +
+                //    "<br>password: " + password,
+                //});
+                dbm.call("login_on_api", {
+                    password: password,
+                    user: username,
+                });
+            }],
+        }]);
         dbm.facilitymanager.actionManager.addListener("window2_show", () => {
             dbm.call("timer");
+        });
+        dbm.facilitymanager.actionManager.addListener("window1_show", () => {
+            dbm.call("info_api");
         });
         dbm.facilitymanager.actionManager.addListener("window2_hide", () => {
             dbm.facilitymanager.actionManager.cancelRepeatingAction("timer");
         });
 
+        dbm.addActions([{
+            actionName: "login_on_api",
+            listeners: [(x) => {
+                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=login&username=" + x.user + "&password=" + x.password, (y) => dbm.call("api_login_request_done", y));
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "info_api",
+            listeners: [() => {
+                const model = dbm.facilitymanager.models.find((x) => x.name === "login").model.get();
+                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=info&username=" + model.user + "&password=" + model.password, (y) => dbm.call("api_info_request_done", y));
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "api_login_request_done",
+            listeners: [(x) => {
+                dbm.injectModel("login", {
+                    isVisible: false,
+                });
+                dbm.injectModel("windowlogger", { content: "IP " + JSON.parse(x).ip});
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "api_info_request_done",
+            listeners: [(x) => {
+                dbm.injectModel("login", {
+                    isVisible: false,
+                });
+                dbm.injectModel("window1", { content: x });
+            }]
+        }]);
+
         // Start framework
         dbm.start();
-
+        //document.body.appendChild("login_form");
     </script>
 </body>
 </html>
