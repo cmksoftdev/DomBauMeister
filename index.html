@@ -41,16 +41,52 @@
             100,
             "Settings",
             "<canvas id=\"canvas\"/>",
-            "---");
+            "<canvas id=\"canvas\"/>");
+
+        const windowsql = getWindowView(
+            "app",
+            "windowsql",
+            300,
+            100,
+            "SQL",
+            (x) => {
+                return [{
+                    type: "textarea",
+                    style: "pointer-events: all;width:100%;height:45%;resize: none;overlay: auto;",
+                    content: x.text,
+                    id: "textarea_sql",
+                }, {
+                    type: "button",
+                    style: "pointer-events: all;width:100%;height:10%;resize: none;",
+                    content: "Execute query",
+                    id: "button_sql",
+                }, {
+                    type: "div",
+                    style: "pointer-events: all;width:100%;height:45%;resize: none;overlay: auto;",
+                    content: x.result,
+                    id: "div_sql",
+                }];
+            },
+            "<canvas id=\"canvas\"/>");
+
         const windoweditor = getWindowView(
             "app",
             "windoweditor",
             300,
             100,
-            "Editor", [{
-                type: "textarea",
-                style: "pointer-events: all;width:100%;height:100%;resize: none;"
-            }],
+            "Editor", (x) => {
+                return [{
+                    type: "textarea",
+                    style: "pointer-events: all;width:100%;height:90%;resize: none;",
+                    content: x.text,
+                    id: "textarea",
+                }, {
+                    type: "button",
+                    style: "pointer-events: all;width:100%;height:10%;resize: none;",
+                    content: "Change background image",
+                    id: "button_bgi",
+                }];
+            },
             "---");
         const windowlogger = getWindowView(
             "app4",
@@ -118,9 +154,46 @@
             350,
             "Logger",
             "windowlogger_show");
+        const icon5 = getIconView(
+            "icon5",
+            "https://upload.wikimedia.org/wikipedia/commons/6/6f/Sql_database_shortcut_icon.png",
+            "icon5",
+            50,
+            450,
+            "SQL query executer",
+            "windowsql_show");
+
+        windoweditor.events.push({
+            elementId: "button_bgi",
+            domTreeId: "windoweditor",
+            eventId: "click",
+            eventName: "button_bgi",
+            actionName: "button_bgi"
+        }, {
+                elementId: "textarea",
+                domTreeId: "windoweditor",
+                eventId: "change",
+                eventName: "textchange",
+                actionName: "textchange"
+            });
+
+        windowsql.events.push({
+            elementId: "button_sql",
+            domTreeId: "windowsql",
+            eventId: "click",
+            eventName: "button_sql",
+            actionName: "button_sql"
+        }, {
+                elementId: "textarea_sql",
+                domTreeId: "windowsql",
+                eventId: "change",
+                eventName: "textchange_sql",
+                actionName: "textchange_sql"
+            });
 
         // Add views to framework
-        dbm.addViews([login, windowtest, windowtest2, windoweditor, windowlogger, icon1, icon2, icon3, icon4]);
+        dbm.addViews([login, windowtest, windowtest2, windoweditor, windowlogger, windowsql, icon1, icon2, icon3, icon4, icon5]);
+        dbm.injectModel("windoweditor", { text: "", });
 
         // Add timer to settings window
         dbm.addActions([{
@@ -132,7 +205,7 @@
                     + currentdate.getMinutes() + ":"
                     + currentdate.getSeconds();
                 dbm.injectModel("window2", {
-                    content: datetime
+                    footer: datetime
                 });
             }],
             interval: 1000,
@@ -146,11 +219,6 @@
                     password: password,
                     user: username,
                 });
-                //dbm.injectModel("windowlogger", {
-                //    isVisible: false,
-                //    content: "username: " + username +
-                //    "<br>password: " + password,
-                //});
                 dbm.call("login_on_api", {
                     password: password,
                     user: username,
@@ -168,9 +236,42 @@
         });
 
         dbm.addActions([{
+            actionName: "button_bgi",
+            listeners: [(x) => {
+                const imgurl = "url('" + document.getElementById("textarea").value + "')";
+                document.body.style.backgroundImage = imgurl;
+                const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
+                postRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=settings&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
+                    JSON.stringify({ 'backgroundimage': document.getElementById("textarea").value }),
+                    (y) => dbm.call("api_login_request_done", y));
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "button_sql",
+            listeners: [(x) => {
+                const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
+                postRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=sql&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
+                    document.getElementById("textarea_sql").value,
+                    (y) => dbm.call("api_sql_request_done", y));
+            }]
+        }]);
+
+        dbm.addActions([{
             actionName: "login_on_api",
             listeners: [(x) => {
-                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=login&username=" + x.user + "&password=" + x.password, (y) => dbm.call("api_login_request_done", y));
+                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=handshake", (y) => dbm.call("handshake_done", y));
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "handshake_done",
+            listeners: [(x) => {
+                dbm.injectModel("login", {
+                    token: x,
+                });
+                const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
+                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=login&username=" + model.user + "&password=" + sha256(model.password + x) + "&token=" + x, (y) => dbm.call("api_login_request_done", y));
             }]
         }]);
 
@@ -178,7 +279,7 @@
             actionName: "info_api",
             listeners: [() => {
                 const model = dbm.facilitymanager.models.find((x) => x.name === "login").model.get();
-                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=info&username=" + model.user + "&password=" + model.password, (y) => dbm.call("api_info_request_done", y));
+                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=info&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token, (y) => dbm.call("api_info_request_done", y));
             }]
         }]);
 
@@ -188,7 +289,36 @@
                 dbm.injectModel("login", {
                     isVisible: false,
                 });
-                dbm.injectModel("windowlogger", { content: "IP " + JSON.parse(x).ip});
+                const settings = JSON.parse(x);
+                dbm.injectModel("windowlogger", { content: "IP " + settings.ip });
+                document.body.style.backgroundImage = settings.backgroundimage;
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "api_sql_request_done",
+            listeners: [(x) => {
+                dbm.injectModel("windowsql", {
+                    result: x,
+                });
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "textchange",
+            listeners: [(x) => {
+                dbm.injectModel("windoweditor", {
+                    text: document.getElementById("textarea").value,
+                });
+            }]
+        }]);
+
+        dbm.addActions([{
+            actionName: "textchange_sql",
+            listeners: [(x) => {
+                dbm.injectModel("windowsql", {
+                    text: document.getElementById("textarea_sql").value,
+                });
             }]
         }]);
 

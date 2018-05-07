@@ -1,3 +1,6 @@
+function isFunction(functionToCheck) {
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
 
 function getWindowView(rootElement, name, x, y, title, content, footer) {
     return {
@@ -47,13 +50,13 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
                             {
                                 type: "div",
                                 style: "background:lightgray;margin:5px;overflow: scroll;height:" + (model.height - 40) + "px;pointer-events: all;",
-                                content: model.content,
+                                content: isFunction(model.content) ? model.content(model) : model.content,
                                 id: name + "_w2"
                             },
                             {
                                 type: "div",
                                 style: "background-color:gray;color:white;height:20px;position:absolute;bottom:0px;width:100%;text-align:center;pointer-events: all;",
-                                content: footer,
+                                content: model.footer,
                                 id: name + "_w3"
                             }],
                         style: "position: absolute;" +
@@ -116,6 +119,7 @@ function getWindowView(rootElement, name, x, y, title, content, footer) {
             width: 200,
             isMouseDown: false,
             content: content,
+            footer: footer,
         },
         actions: [{
             actionName: name + "_mousemove",
