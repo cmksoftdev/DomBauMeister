@@ -26,8 +26,8 @@ const view = {
         name: "viewName",
         rootElementId: "rootElement",
         render: (model) => {
-            if (!model.isVisible)
-                return null;
+            if (!model.isVisible) // This "if" is on top of the function because we don't want 
+                return null;      // to create the elements if model.isVisible is false.
             const elements = [{
                         type: "div",
                         content: model.content, // Here we set content from model to the element 
