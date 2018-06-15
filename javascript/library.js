@@ -313,8 +313,17 @@ class ImageManager {
         this.images = [];
     }
 
-    getImage(name) {
-        return this.image.find((x) => x.name === name);
+    getImage(n) {
+        let img = this.image.find((x) => x.name === n);
+        if (img === undefined) {
+            img = {
+                name = n,
+                image = new Image(),
+            };
+            img.image.src = n;
+            this.images.push(img);
+        }
+        return img.image;
     }
 }
 
