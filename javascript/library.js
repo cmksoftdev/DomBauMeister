@@ -308,6 +308,16 @@ class EventManager {
 // Level 1
 // Lower level functions and classes
 
+class ImageManager {
+    constructor() {
+        this.images = [];
+    }
+
+    getImage(name) {
+        return this.image.find((x) => x.name === name);
+    }
+}
+
 function createStyles(styles) {
     if (Array.isArray(styles)) {
         let styleString = "style=\"";
