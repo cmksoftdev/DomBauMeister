@@ -241,7 +241,7 @@
                 const imgurl = "url('" + document.getElementById("textarea").value + "')";
                 document.body.style.backgroundImage = imgurl;
                 const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
-                postRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=settings&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
+                postRequestAsync("http://cmk.bplaced.net/DomBauMeisterApi.php?command=settings&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
                     JSON.stringify({ 'backgroundimage': document.getElementById("textarea").value }),
                     (y) => dbm.call("api_login_request_done", y));
             }]
@@ -251,7 +251,7 @@
             actionName: "button_sql",
             listeners: [(x) => {
                 const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
-                postRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=sql&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
+                postRequestAsync("http://cmk.bplaced.net/DomBauMeisterApi.php?command=sql&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token,
                     document.getElementById("textarea_sql").value,
                     (y) => dbm.call("api_sql_request_done", y));
             }]
@@ -260,7 +260,7 @@
         dbm.addActions([{
             actionName: "login_on_api",
             listeners: [(x) => {
-                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=handshake", (y) => dbm.call("handshake_done", y));
+                getRequestAsync("http://cmk.bplaced.net/DomBauMeisterApi.php?command=handshake", (y) => dbm.call("handshake_done", y));
             }]
         }]);
 
@@ -271,7 +271,7 @@
                     token: x,
                 });
                 const model = dbm.facilitymanager.models.find((y) => y.name === "login").model.get();
-                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=login&username=" + model.user + "&password=" + sha256(model.password + x) + "&token=" + x, (y) => dbm.call("api_login_request_done", y));
+                getRequestAsync("http://cmk.bplaced.net/DomBauMeisterApi.php?command=login&username=" + model.user + "&password=" + sha256(model.password + x) + "&token=" + x, (y) => dbm.call("api_login_request_done", y));
             }]
         }]);
 
@@ -279,7 +279,7 @@
             actionName: "info_api",
             listeners: [() => {
                 const model = dbm.facilitymanager.models.find((x) => x.name === "login").model.get();
-                getRequestAsync("http://cmk.bplaced.com/DomBauMeisterApi.php?command=info&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token, (y) => dbm.call("api_info_request_done", y));
+                getRequestAsync("http://cmk.bplaced.net/DomBauMeisterApi.php?command=info&username=" + model.user + "&password=" + sha256(model.password + model.token) + "&token=" + model.token, (y) => dbm.call("api_info_request_done", y));
             }]
         }]);
 
