@@ -38,7 +38,8 @@ const view = {
         model: { // This are the start values of the model
             isVisible: true,
             content: "text"
-        }
+        },
+        events: []
 };
 ```
 <br/>
