@@ -2,6 +2,8 @@
 DomBauMeister.js is a lightweight framework to create dynamic html sites. It's easy to use and debug. If you have any questions, just ask.
 <br />
 see a demo on http://cmk.bplaced.net/dbm.html
+or
+http://cmk.bplaced.net/colors.htm
 <br />
 How to initialize DBM.js<br />
 ```javascript
