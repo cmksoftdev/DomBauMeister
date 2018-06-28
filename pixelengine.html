@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>DomBauMeister.js Test</title>
+    </head>
+
+    <body bgcolor="gray">
+        <p id="app"></p>
+        <script src="javascript/library.js"></script>
+        <script src="javascript/viewtemplates.js"></script>
+        <script>
+            function getPixelView(rootElement, name, x, y, color) {
+                return {
+                    name: name,
+                    rootElementId: rootElement,
+                    render: (model) => {
+                        if (!model.isVisible) // This "if" is on top of the function because we don't want 
+                            return null;      // to create the elements if model.isVisible is false.
+                        const elements = [{
+                            type: "div",
+                            style: "position:absolute;" +
+                            "width:5px;height:5px;" +
+                            "left:" + (model.x * 6) + "px;top:" + (model.y * 6) + "px;background:" + model.color + ";",
+                            id: model.name + "_div",
+                        }];
+                        return elements;
+                    },
+                    model: { // This are the start values of the model
+                        isVisible: true,
+                        x: x,
+                        y: y,
+                        color: color
+                    },
+                    events: []
+                };
+            }
+
+            const dbm = new DomBauMeister({
+                rootElement: "app",
+                renderOnEventChange: "",
+                renderOnModelChange: ""
+            });
+            var views = [];
+            for (let i = 0; i < 120; i++) {
+                for (let j = 0; j < 120; j++) {
+                    views.push(getPixelView("app","pixel" + i + "_" + j, i, j, "black"));
+                }
+            }
+            dbm.addViews(views);
+            dbm.start();
+        </script>
+    </body>
+</html>

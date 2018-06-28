@@ -317,8 +317,8 @@ class ImageManager {
         let img = this.image.find((x) => x.name === n);
         if (img === undefined) {
             img = {
-                name = n,
-                image = new Image(),
+                name: n,
+                image: new Image(),
             };
             img.image.src = n;
             this.images.push(img);
