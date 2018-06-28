@@ -308,6 +308,25 @@ class EventManager {
 // Level 1
 // Lower level functions and classes
 
+class ImageManager {
+    constructor() {
+        this.images = [];
+    }
+
+    getImage(n) {
+        let img = this.image.find((x) => x.name === n);
+        if (img === undefined) {
+            img = {
+                name: n,
+                image: new Image(),
+            };
+            img.image.src = n;
+            this.images.push(img);
+        }
+        return img.image;
+    }
+}
+
 function createStyles(styles) {
     if (Array.isArray(styles)) {
         let styleString = "style=\"";
