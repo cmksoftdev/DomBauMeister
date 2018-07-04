@@ -1,0 +1,28 @@
+{
+  "name": "dom-bau-meister",
+  "version": "0.2.0",
+  "description": "A small framework to render html sites",
+  "main": "javascript/library.js",
+  "scripts": {
+    "start": "node javascript/library.js"
+  },
+  "dependencies": {
+  },
+  "engines": {
+    "node": "4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cmksoftdev/CMK_CMS"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "author": "CMK",
+  "contributors": [
+    "Christian Kirchner <cmk@web.de> (http://cmk.bplaced.net/)"
+  ],
+  "license": "MIT"
+}
