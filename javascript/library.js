@@ -358,11 +358,11 @@ class ActionManager {
     }
 
     removeAction(actionName) {
-        if (!parameterValidator([actionName, listeners])) {
+        if (!parameterValidator([actionName])) {
             log();
             return false;
         }
-        const i = this.actions.findIndex(action);
+        const i = this.actions.findIndex(x => x.actionName === actionName);
         this.actions = this.actions.splice(i, 1);
     }
 
